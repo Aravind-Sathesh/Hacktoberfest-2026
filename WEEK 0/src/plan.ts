@@ -125,3 +125,58 @@ export function pickDeterministic(options: Problem[], count: number): Problem[] 
   }
   return picked;
 }
+
+/** TLE's CP-31 sheet as they shared it: per rating level, problems in the order the sheet lists them. */
+export type Sheet = Record<string, { name: string; link: string }[]>;
+
+const SHEET_LINK = /\/(?:problemset\/problem|contest)\/(\d+)\/(?:problem\/)?([A-Z]\d?)\b/;
+
+export type SheetSpot = { level: number; position: number };
+type SheetEntry = SheetSpot & { contestId: number; index: string; name: string };
+
+/** Every sheet problem in sheet order: lowest level first, then its place within the level. */
+function sheetEntries(sheet: Sheet): SheetEntry[] {
+  return Object.entries(sheet)
+    .sort(([a], [b]) => Number(a) - Number(b))
+    .flatMap(([level, list]) =>
+      list.flatMap(({ name, link }, i) => {
+        const match = link.match(SHEET_LINK);
+        return match ? [{ contestId: Number(match[1]), index: match[2], name, level: Number(level), position: i + 1 }] : [];
+      }),
+    );
+}
+
+const entryId = (e: SheetEntry) => `${e.contestId}${e.index}`;
+
+/** Where each problem sits on the sheet, by problem id: its level and 1-based place in that level. */
+export const sheetSpots = (sheet: Sheet): Map<string, SheetSpot> =>
+  new Map(sheetEntries(sheet).map((e) => [entryId(e), { level: e.level, position: e.position }]));
+
+/**
+ * What's next on the sheet for him, minus what he has solved. His most recent sheet solve is where he
+ * is: the queue picks up right after it, then the ones he skipped earlier in that level, then the levels
+ * above. With no sheet solves yet, it starts at his rating level. A rating he chose in Settings overrides
+ * both and starts at that level. The problemset copy is used when there is one, for its tags.
+ */
+export function sheetQueue(
+  sheet: Sheet,
+  problems: Problem[],
+  solvedAt: Map<string, number>,
+  rating: number,
+  chosenRating?: number,
+): Problem[] {
+  const entries = sheetEntries(sheet);
+  const levels = [...new Set(entries.map((e) => e.level))];
+  const latest = entries
+    .filter((e) => solvedAt.has(entryId(e)))
+    .sort((a, b) => solvedAt.get(entryId(b))! - solvedAt.get(entryId(a))!)[0];
+  const levelFor = (r: number) => levels.filter((level) => level <= r).at(-1) ?? levels[0];
+  const start = chosenRating !== undefined ? levelFor(chosenRating) : (latest?.level ?? levelFor(rating));
+  const open = entries.filter((e) => e.level >= start && !solvedAt.has(entryId(e)));
+  const skipped = (e: SheetEntry) => latest !== undefined && e.level === latest.level && e.position < latest.position;
+  const byId = new Map(problems.map((p) => [problemId(p), p]));
+  const inLevel = open.filter((e) => e.level === start);
+  const ordered = [...inLevel.filter((e) => !skipped(e)), ...inLevel.filter(skipped), ...open.filter((e) => e.level > start)];
+  return ordered
+    .map((e) => byId.get(entryId(e)) ?? { contestId: e.contestId, index: e.index, name: e.name, rating: e.level, tags: [] });
+}

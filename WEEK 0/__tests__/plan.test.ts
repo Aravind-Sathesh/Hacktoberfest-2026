@@ -1,5 +1,5 @@
 import type { Contest, Problem } from '../src/cf';
-import { candidates, dailyTarget, mergeBlocks, pickDeterministic, recentContestId, shortlist, upsolve, withoutTags } from '../src/plan';
+import { candidates, dailyTarget, mergeBlocks, pickDeterministic, recentContestId, sheetQueue, sheetSpots, shortlist, upsolve, withoutTags } from '../src/plan';
 
 const targets = { weekday: { problems: 4, minutes: 150 }, weekend: { problems: 6, minutes: 240 } };
 const friday = new Date(2026, 9, 2, 9);
@@ -94,5 +94,49 @@ describe('shortlist', () => {
 
   it('keeps everything when there are fewer than 25', () => {
     expect(shortlist(options.slice(0, 3)).length).toBe(3);
+  });
+});
+
+describe('sheetQueue', () => {
+  const link = (id: string) => `https://codeforces.com/problemset/problem/${id.slice(0, -1)}/${id.slice(-1)}`;
+  const sheet = {
+    '1000': [{ name: 'Old', link: link('100A') }],
+    '1100': [
+      { name: 'Done', link: link('200A') },
+      { name: 'Next', link: link('201B') },
+    ],
+    '1200': [{ name: 'Later', link: 'https://codeforces.com/contest/300/problem/C' }],
+  };
+
+  it('continues from the level of his latest sheet solve, in sheet order, with problemset tags when it has them', () => {
+    const problems = [problem(201, 'B', 1100, ['greedy'])];
+    const queue = sheetQueue(sheet, problems, new Map([['200A', 5]]), 900);
+    expect(queue.map((p) => `${p.contestId}${p.index}`)).toEqual(['201B', '300C']);
+    expect(queue[0].tags).toEqual(['greedy']);
+    expect(queue[1]).toMatchObject({ name: 'Later', rating: 1200, tags: [] });
+  });
+
+  it('knows the level and 1-based place of each sheet problem', () => {
+    expect(sheetSpots(sheet).get('201B')).toEqual({ level: 1100, position: 2 });
+    expect(sheetSpots(sheet).get('300C')).toEqual({ level: 1200, position: 1 });
+  });
+
+  it('starts at the lowest level when he is below the sheet', () => {
+    expect(sheetQueue(sheet, [], new Map(), 700)[0].name).toBe('Old');
+  });
+
+  it('picks up right after his latest solve, then the ones he skipped, then the next level', () => {
+    const level = { '1300': ['A', 'B', 'C', 'D'].map((i) => ({ name: i, link: link(`500${i}`) })), '1400': [{ name: 'E', link: link('600E') }] };
+    expect(sheetQueue(level, [], new Map([['500C', 1]]), 1000).map((p) => p.name)).toEqual(['D', 'A', 'B', 'E']);
+  });
+
+  it('starts at the level he chose, still picking up after a solve in that level', () => {
+    expect(sheetQueue(sheet, [], new Map([['100A', 9]]), 1000, 1250).map((p) => p.name)).toEqual(['Later']);
+    expect(sheetQueue(sheet, [], new Map([['200A', 9]]), 1500, 1100).map((p) => p.name)).toEqual(['Next', 'Later']);
+  });
+
+  it('follows the most recent sheet solve, not the furthest one or his rating', () => {
+    const solvedAt = new Map([['300C', 1], ['100A', 2]]);
+    expect(sheetQueue(sheet, [], solvedAt, 1500).map((p) => p.name)).toEqual(['Done', 'Next']);
   });
 });

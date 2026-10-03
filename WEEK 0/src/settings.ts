@@ -1,6 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Targets } from './plan';
 
+/** Where the day's suggestions come from: TLE's CP-31 sheet in order, or any problem near his rating. */
+export type ProblemSource = 'cp31' | 'rating';
+
 export type Settings = {
   handle: string;
   goalRating: number;
@@ -13,6 +16,9 @@ export type Settings = {
   showRatings: boolean;
   /** Problems with any of these tags are never picked. */
   excludedTags: string[];
+  problemSource: ProblemSource;
+  /** Pick problems as if he were this rating, e.g. to move on to the next sheet. Null means his real progress. */
+  practiceRating: number | null;
   targets: Targets;
 };
 
@@ -26,6 +32,8 @@ export const DEFAULT_SETTINGS: Settings = {
   showTags: false,
   showRatings: true,
   excludedTags: [],
+  problemSource: 'cp31',
+  practiceRating: null,
   targets: {
     weekday: { problems: 4, minutes: 150 },
     weekend: { problems: 6, minutes: 240 },

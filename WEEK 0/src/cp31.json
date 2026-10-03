@@ -1,0 +1,1514 @@
+{
+  "800": [
+    {
+      "name": "Halloumi Boxes",
+      "link": "https://codeforces.com/problemset/problem/1903/A"
+    },
+    {
+      "name": "Line Trip",
+      "link": "https://codeforces.com/problemset/problem/1901/A"
+    },
+    {
+      "name": "Cover in Water",
+      "link": "https://codeforces.com/problemset/problem/1900/A"
+    },
+    {
+      "name": "Game with Integers",
+      "link": "https://codeforces.com/problemset/problem/1899/A"
+    },
+    {
+      "name": "Jagged Swaps",
+      "link": "https://codeforces.com/problemset/problem/1896/A"
+    },
+    {
+      "name": "Doremy's Paint 3",
+      "link": "https://codeforces.com/problemset/problem/1890/A"
+    },
+    {
+      "name": "Don't Try to Count",
+      "link": "https://codeforces.com/problemset/problem/1881/A"
+    },
+    {
+      "name": "How Much Does Daytona Cost?",
+      "link": "https://codeforces.com/problemset/problem/1878/A"
+    },
+    {
+      "name": "Goals of Victory",
+      "link": "https://codeforces.com/problemset/problem/1877/A"
+    },
+    {
+      "name": "Target Practice",
+      "link": "https://codeforces.com/problemset/problem/1873/C"
+    },
+    {
+      "name": "Ambitious Kid",
+      "link": "https://codeforces.com/problemset/problem/1866/A"
+    },
+    {
+      "name": "Sequence Game",
+      "link": "https://codeforces.com/problemset/problem/1862/B"
+    },
+    {
+      "name": "United We Stand",
+      "link": "https://codeforces.com/problemset/problem/1859/A"
+    },
+    {
+      "name": "Buttons",
+      "link": "https://codeforces.com/problemset/problem/1858/A"
+    },
+    {
+      "name": "Array Coloring",
+      "link": "https://codeforces.com/problemset/problem/1857/A"
+    },
+    {
+      "name": "Desorting",
+      "link": "https://codeforces.com/problemset/problem/1853/A"
+    },
+    {
+      "name": "Forbidden Integer",
+      "link": "https://codeforces.com/problemset/problem/1845/A"
+    },
+    {
+      "name": "Grasshopper on a Line",
+      "link": "https://codeforces.com/problemset/problem/1837/A"
+    },
+    {
+      "name": "Unit Array",
+      "link": "https://codeforces.com/problemset/problem/1834/A"
+    },
+    {
+      "name": "Twin Permutations",
+      "link": "https://codeforces.com/problemset/problem/1831/A"
+    },
+    {
+      "name": "Blank Space",
+      "link": "https://codeforces.com/problemset/problem/1829/B"
+    },
+    {
+      "name": "Coins",
+      "link": "https://codeforces.com/problemset/problem/1814/A"
+    },
+    {
+      "name": "Walking Master",
+      "link": "https://codeforces.com/problemset/problem/1806/A"
+    },
+    {
+      "name": "We Need the Zero",
+      "link": "https://codeforces.com/problemset/problem/1805/A"
+    },
+    {
+      "name": "Prepend and Append",
+      "link": "https://codeforces.com/problemset/problem/1791/C"
+    },
+    {
+      "name": "Serval and Mocha's Array",
+      "link": "https://codeforces.com/problemset/problem/1789/A"
+    },
+    {
+      "name": "One and Two",
+      "link": "https://codeforces.com/problemset/problem/1788/A"
+    },
+    {
+      "name": "Make it Beautiful",
+      "link": "https://codeforces.com/problemset/problem/1783/A"
+    },
+    {
+      "name": "Everybody Likes Good Arrays!",
+      "link": "https://codeforces.com/problemset/problem/1777/A"
+    },
+    {
+      "name": "Extremely Round",
+      "link": "https://codeforces.com/problemset/problem/1766/A"
+    },
+    {
+      "name": "Two Permutations",
+      "link": "https://codeforces.com/problemset/problem/1761/A"
+    }
+  ],
+  "900": [
+    {
+      "name": "Forked!",
+      "link": "https://codeforces.com/problemset/problem/1904/A"
+    },
+    {
+      "name": "Chemistry",
+      "link": "https://codeforces.com/problemset/problem/1883/B"
+    },
+    {
+      "name": "Vasilije in Cacak",
+      "link": "https://codeforces.com/problemset/problem/1878/C"
+    },
+    {
+      "name": "Jellyfish and Undertale",
+      "link": "https://codeforces.com/problemset/problem/1875/A"
+    },
+    {
+      "name": "Make It Zero",
+      "link": "https://codeforces.com/problemset/problem/1869/A"
+    },
+    {
+      "name": "Longest Divisors Interval",
+      "link": "https://codeforces.com/problemset/problem/1855/B"
+    },
+    {
+      "name": "Balanced Round",
+      "link": "https://codeforces.com/problemset/problem/1850/D"
+    },
+    {
+      "name": "Comparison String",
+      "link": "https://codeforces.com/problemset/problem/1837/B"
+    },
+    {
+      "name": "Permutation Swap",
+      "link": "https://codeforces.com/problemset/problem/1828/B"
+    },
+    {
+      "name": "Odd Queries",
+      "link": "https://codeforces.com/problemset/problem/1807/D"
+    },
+    {
+      "name": "Not Dividing",
+      "link": "https://codeforces.com/problemset/problem/1794/B"
+    },
+    {
+      "name": "Mainak and Array",
+      "link": "https://codeforces.com/problemset/problem/1726/A"
+    },
+    {
+      "name": "NIT Destroys the Universe",
+      "link": "https://codeforces.com/problemset/problem/1696/B"
+    },
+    {
+      "name": "AvtoBus",
+      "link": "https://codeforces.com/problemset/problem/1679/A"
+    },
+    {
+      "name": "Make It Increasing",
+      "link": "https://codeforces.com/problemset/problem/1675/B"
+    },
+    {
+      "name": "Deletive Editing",
+      "link": "https://codeforces.com/problemset/problem/1666/D"
+    },
+    {
+      "name": "Array Cloning Technique",
+      "link": "https://codeforces.com/problemset/problem/1665/B"
+    },
+    {
+      "name": "Make AP",
+      "link": "https://codeforces.com/problemset/problem/1624/B"
+    },
+    {
+      "name": "Odd Grasshopper",
+      "link": "https://codeforces.com/problemset/problem/1607/B"
+    },
+    {
+      "name": "AB Balance",
+      "link": "https://codeforces.com/problemset/problem/1606/A"
+    },
+    {
+      "name": "Make it Divisible by 25",
+      "link": "https://codeforces.com/problemset/problem/1593/B"
+    },
+    {
+      "name": "Luntik and Subsequences",
+      "link": "https://codeforces.com/problemset/problem/1582/B"
+    },
+    {
+      "name": "Mocha and Math",
+      "link": "https://codeforces.com/problemset/problem/1559/A"
+    },
+    {
+      "name": "Exciting Bets",
+      "link": "https://codeforces.com/problemset/problem/1543/A"
+    },
+    {
+      "name": "Bad Boy",
+      "link": "https://codeforces.com/problemset/problem/1537/B"
+    },
+    {
+      "name": "Odd Divisor",
+      "link": "https://codeforces.com/problemset/problem/1475/A"
+    },
+    {
+      "name": "Strange Partition",
+      "link": "https://codeforces.com/problemset/problem/1471/A"
+    },
+    {
+      "name": "Sum of Medians",
+      "link": "https://codeforces.com/problemset/problem/1440/B"
+    },
+    {
+      "name": "Three Indices",
+      "link": "https://codeforces.com/problemset/problem/1380/A"
+    },
+    {
+      "name": "01 Game",
+      "link": "https://codeforces.com/problemset/problem/1373/B"
+    },
+    {
+      "name": "Multiply by 2, divide by 6",
+      "link": "https://codeforces.com/problemset/problem/1374/B"
+    }
+  ],
+  "1000": [
+    {
+      "name": "Swap and Delete",
+      "link": "https://codeforces.com/problemset/problem/1913/B"
+    },
+    {
+      "name": "Raspberries",
+      "link": "https://codeforces.com/problemset/problem/1883/C"
+    },
+    {
+      "name": "Helmets in Night Light",
+      "link": "https://codeforces.com/problemset/problem/1876/A"
+    },
+    {
+      "name": "Olya and Game with Arrays",
+      "link": "https://codeforces.com/problemset/problem/1859/B"
+    },
+    {
+      "name": "Monsters",
+      "link": "https://codeforces.com/problemset/problem/1849/B"
+    },
+    {
+      "name": "Ski Resort",
+      "link": "https://codeforces.com/problemset/problem/1840/C"
+    },
+    {
+      "name": "Array merging",
+      "link": "https://codeforces.com/problemset/problem/1831/B"
+    },
+    {
+      "name": "Distinct Split",
+      "link": "https://codeforces.com/problemset/problem/1791/D"
+    },
+    {
+      "name": "Minimum LCM",
+      "link": "https://codeforces.com/problemset/problem/1765/M"
+    },
+    {
+      "name": "Traffic Light",
+      "link": "https://codeforces.com/problemset/problem/1744/C"
+    },
+    {
+      "name": "Basketball Together",
+      "link": "https://codeforces.com/problemset/problem/1725/B"
+    },
+    {
+      "name": "Beautiful Array",
+      "link": "https://codeforces.com/problemset/problem/1715/B"
+    },
+    {
+      "name": "Luke is a Foodie",
+      "link": "https://codeforces.com/problemset/problem/1704/B"
+    },
+    {
+      "name": "Shoe Shuffling",
+      "link": "https://codeforces.com/problemset/problem/1691/B"
+    },
+    {
+      "name": "Black and White Stripe",
+      "link": "https://codeforces.com/problemset/problem/1690/D"
+    },
+    {
+      "name": "Red Versus Blue",
+      "link": "https://codeforces.com/problemset/problem/1659/A"
+    },
+    {
+      "name": "Roof Construction",
+      "link": "https://codeforces.com/problemset/problem/1632/B"
+    },
+    {
+      "name": "Triangles on a Rectangle",
+      "link": "https://codeforces.com/problemset/problem/1620/B"
+    },
+    {
+      "name": "Divan and a New Project",
+      "link": "https://codeforces.com/problemset/problem/1614/B"
+    },
+    {
+      "name": "MEXor Mixup",
+      "link": "https://codeforces.com/problemset/problem/1567/B"
+    },
+    {
+      "name": "Double-ended Strings",
+      "link": "https://codeforces.com/problemset/problem/1506/C"
+    },
+    {
+      "name": "Add and Divide",
+      "link": "https://codeforces.com/problemset/problem/1485/A"
+    },
+    {
+      "name": "Different Divisors",
+      "link": "https://codeforces.com/problemset/problem/1474/B"
+    },
+    {
+      "name": "Numbers Box",
+      "link": "https://codeforces.com/problemset/problem/1447/B"
+    },
+    {
+      "name": "Valerii Against Everyone",
+      "link": "https://codeforces.com/problemset/problem/1438/B"
+    },
+    {
+      "name": "Buying Torches",
+      "link": "https://codeforces.com/problemset/problem/1418/A"
+    },
+    {
+      "name": "Fair Numbers",
+      "link": "https://codeforces.com/problemset/problem/1411/B"
+    },
+    {
+      "name": "Move Brackets",
+      "link": "https://codeforces.com/problemset/problem/1374/C"
+    },
+    {
+      "name": "Johnny and Ancient Computer",
+      "link": "https://codeforces.com/problemset/problem/1362/A"
+    },
+    {
+      "name": "Bogosort",
+      "link": "https://codeforces.com/problemset/problem/1312/B"
+    },
+    {
+      "name": "Reverse a Substring",
+      "link": "https://codeforces.com/problemset/problem/1155/A"
+    }
+  ],
+  "1100": [
+    {
+      "name": "Erase First or Second Letter",
+      "link": "https://codeforces.com/problemset/problem/1917/B"
+    },
+    {
+      "name": "Quests",
+      "link": "https://codeforces.com/problemset/problem/1914/C"
+    },
+    {
+      "name": "Collecting Game",
+      "link": "https://codeforces.com/problemset/problem/1904/B"
+    },
+    {
+      "name": "Yarik and Array",
+      "link": "https://codeforces.com/problemset/problem/1899/C"
+    },
+    {
+      "name": "250 Thousand Tons of TNT",
+      "link": "https://codeforces.com/problemset/problem/1899/B"
+    },
+    {
+      "name": "Deja Vu",
+      "link": "https://codeforces.com/problemset/problem/1891/B"
+    },
+    {
+      "name": "Building an Aquarium",
+      "link": "https://codeforces.com/problemset/problem/1873/E"
+    },
+    {
+      "name": "2D Traveling",
+      "link": "https://codeforces.com/problemset/problem/1869/B"
+    },
+    {
+      "name": "Cardboard for Pictures",
+      "link": "https://codeforces.com/problemset/problem/1850/E"
+    },
+    {
+      "name": "Tenzing and Books",
+      "link": "https://codeforces.com/problemset/problem/1842/B"
+    },
+    {
+      "name": "Maximum Sum",
+      "link": "https://codeforces.com/problemset/problem/1832/B"
+    },
+    {
+      "name": "Counting Orders",
+      "link": "https://codeforces.com/problemset/problem/1827/A"
+    },
+    {
+      "name": "Lunatic Never Content",
+      "link": "https://codeforces.com/problemset/problem/1826/B"
+    },
+    {
+      "name": "Sort the Subarray",
+      "link": "https://codeforces.com/problemset/problem/1821/B"
+    },
+    {
+      "name": "JoJo's Incredible Adventures",
+      "link": "https://codeforces.com/problemset/problem/1820/B"
+    },
+    {
+      "name": "Subsequence Addition (Hard Version)",
+      "link": "https://codeforces.com/problemset/problem/1807/G2"
+    },
+    {
+      "name": "Li Hua and Pattern",
+      "link": "https://codeforces.com/problemset/problem/1797/B"
+    },
+    {
+      "name": "Teleporters (Easy Version)",
+      "link": "https://codeforces.com/problemset/problem/1791/G1"
+    },
+    {
+      "name": "Negatives and Positives",
+      "link": "https://codeforces.com/problemset/problem/1791/E"
+    },
+    {
+      "name": "GCD Partition",
+      "link": "https://codeforces.com/problemset/problem/1780/B"
+    },
+    {
+      "name": "Coprime",
+      "link": "https://codeforces.com/problemset/problem/1742/D"
+    },
+    {
+      "name": "Kill Demodogs",
+      "link": "https://codeforces.com/problemset/problem/1731/B"
+    },
+    {
+      "name": "Difference of GCDs",
+      "link": "https://codeforces.com/problemset/problem/1708/B"
+    },
+    {
+      "name": "AND Sorting",
+      "link": "https://codeforces.com/problemset/problem/1682/B"
+    },
+    {
+      "name": "A Perfectly Balanced String?",
+      "link": "https://codeforces.com/problemset/problem/1673/B"
+    },
+    {
+      "name": "Eating Candies",
+      "link": "https://codeforces.com/problemset/problem/1669/F"
+    },
+    {
+      "name": "Subtract Operation",
+      "link": "https://codeforces.com/problemset/problem/1656/B"
+    },
+    {
+      "name": "Fun with Even Subarrays",
+      "link": "https://codeforces.com/problemset/problem/1631/B"
+    },
+    {
+      "name": "Paint the Array",
+      "link": "https://codeforces.com/problemset/problem/1618/C"
+    },
+    {
+      "name": "Kalindrome Array",
+      "link": "https://codeforces.com/problemset/problem/1610/B"
+    },
+    {
+      "name": "Yet Another Card Deck",
+      "link": "https://codeforces.com/problemset/problem/1511/C"
+    }
+  ],
+  "1200": [
+    {
+      "name": "Three Activities",
+      "link": "https://codeforces.com/problemset/problem/1914/D"
+    },
+    {
+      "name": "Make Almost Equal With Mod",
+      "link": "https://codeforces.com/problemset/problem/1909/B"
+    },
+    {
+      "name": "Plus Minus Permutation",
+      "link": "https://codeforces.com/problemset/problem/1872/D"
+    },
+    {
+      "name": "Assembly via Minimums",
+      "link": "https://codeforces.com/problemset/problem/1857/C"
+    },
+    {
+      "name": "Vika and the Bridge",
+      "link": "https://codeforces.com/problemset/problem/1848/B"
+    },
+    {
+      "name": "Contrast Value",
+      "link": "https://codeforces.com/problemset/problem/1832/C"
+    },
+    {
+      "name": "Playing in a Casino",
+      "link": "https://codeforces.com/problemset/problem/1808/B"
+    },
+    {
+      "name": "Dora and Search",
+      "link": "https://codeforces.com/problemset/problem/1793/C"
+    },
+    {
+      "name": "Matryoshkas",
+      "link": "https://codeforces.com/problemset/problem/1790/D"
+    },
+    {
+      "name": "Scuza",
+      "link": "https://codeforces.com/problemset/problem/1742/E"
+    },
+    {
+      "name": "Removing Smallest Multiples",
+      "link": "https://codeforces.com/problemset/problem/1734/C"
+    },
+    {
+      "name": "Friends and the Restaurant",
+      "link": "https://codeforces.com/problemset/problem/1729/D"
+    },
+    {
+      "name": "Virus",
+      "link": "https://codeforces.com/problemset/problem/1704/C"
+    },
+    {
+      "name": "Mirror Grid",
+      "link": "https://codeforces.com/problemset/problem/1703/E"
+    },
+    {
+      "name": "Binary Deque",
+      "link": "https://codeforces.com/problemset/problem/1692/E"
+    },
+    {
+      "name": "Stone Age Problem",
+      "link": "https://codeforces.com/problemset/problem/1679/B"
+    },
+    {
+      "name": "Dolce Vita",
+      "link": "https://codeforces.com/problemset/problem/1671/C"
+    },
+    {
+      "name": "Differential Sorting",
+      "link": "https://codeforces.com/problemset/problem/1635/C"
+    },
+    {
+      "name": "Make Them Equal",
+      "link": "https://codeforces.com/problemset/problem/1594/C"
+    },
+    {
+      "name": "Grandma Capa Knits a Scarf",
+      "link": "https://codeforces.com/problemset/problem/1582/C"
+    },
+    {
+      "name": "Pleasant Pairs",
+      "link": "https://codeforces.com/problemset/problem/1541/B"
+    },
+    {
+      "name": "Stable Groups",
+      "link": "https://codeforces.com/problemset/problem/1539/C"
+    },
+    {
+      "name": "Prinzessin der Verurteilung",
+      "link": "https://codeforces.com/problemset/problem/1536/B"
+    },
+    {
+      "name": "Palindrome Game (easy version)",
+      "link": "https://codeforces.com/problemset/problem/1527/B1"
+    },
+    {
+      "name": "Same Differences",
+      "link": "https://codeforces.com/problemset/problem/1520/D"
+    },
+    {
+      "name": "AND 0, Sum Big",
+      "link": "https://codeforces.com/problemset/problem/1514/B"
+    },
+    {
+      "name": "Flip the Bits",
+      "link": "https://codeforces.com/problemset/problem/1504/B"
+    },
+    {
+      "name": "M-Arrays",
+      "link": "https://codeforces.com/problemset/problem/1497/B"
+    },
+    {
+      "name": "Cat cycle",
+      "link": "https://codeforces.com/problemset/problem/1487/B"
+    },
+    {
+      "name": "Districts Connection",
+      "link": "https://codeforces.com/problemset/problem/1433/D"
+    },
+    {
+      "name": "Rock and Lever",
+      "link": "https://codeforces.com/problemset/problem/1420/B"
+    }
+  ],
+  "1300": [
+    {
+      "name": "Divisible Pairs",
+      "link": "https://codeforces.com/problemset/problem/1931/D"
+    },
+    {
+      "name": "Find the Different Ones!",
+      "link": "https://codeforces.com/problemset/problem/1927/D"
+    },
+    {
+      "name": "Romantic Glasses",
+      "link": "https://codeforces.com/problemset/problem/1915/E"
+    },
+    {
+      "name": "Divide and Equalize",
+      "link": "https://codeforces.com/problemset/problem/1881/D"
+    },
+    {
+      "name": "Make it Alternating",
+      "link": "https://codeforces.com/problemset/problem/1879/C"
+    },
+    {
+      "name": "Strong Vertices",
+      "link": "https://codeforces.com/problemset/problem/1857/D"
+    },
+    {
+      "name": "Rudolf and Snowflakes (simple version)",
+      "link": "https://codeforces.com/problemset/problem/1846/E1"
+    },
+    {
+      "name": "Scoring Subsequences",
+      "link": "https://codeforces.com/problemset/problem/1794/C"
+    },
+    {
+      "name": "Gardener and the Array",
+      "link": "https://codeforces.com/problemset/problem/1775/B"
+    },
+    {
+      "name": "Yet Another Problem About Pairs Satisfying an Inequality",
+      "link": "https://codeforces.com/problemset/problem/1703/F"
+    },
+    {
+      "name": "White-Black Balanced Subtrees",
+      "link": "https://codeforces.com/problemset/problem/1676/G"
+    },
+    {
+      "name": "Maximal AND",
+      "link": "https://codeforces.com/problemset/problem/1669/H"
+    },
+    {
+      "name": "Chat Ban",
+      "link": "https://codeforces.com/problemset/problem/1612/C"
+    },
+    {
+      "name": "Array Elimination",
+      "link": "https://codeforces.com/problemset/problem/1601/A"
+    },
+    {
+      "name": "Deep Down Below",
+      "link": "https://codeforces.com/problemset/problem/1561/C"
+    },
+    {
+      "name": "Box Fitting",
+      "link": "https://codeforces.com/problemset/problem/1498/B"
+    },
+    {
+      "name": "Strange Birthday Party",
+      "link": "https://codeforces.com/problemset/problem/1470/A"
+    },
+    {
+      "name": "Move and Turn",
+      "link": "https://codeforces.com/problemset/problem/1459/B"
+    },
+    {
+      "name": "Omkar and Last Class of Math",
+      "link": "https://codeforces.com/problemset/problem/1372/B"
+    },
+    {
+      "name": "Shuffle",
+      "link": "https://codeforces.com/problemset/problem/1366/B"
+    },
+    {
+      "name": "Most socially-distanced subsequence",
+      "link": "https://codeforces.com/problemset/problem/1364/B"
+    },
+    {
+      "name": "Buying Shovels",
+      "link": "https://codeforces.com/problemset/problem/1360/D"
+    },
+    {
+      "name": "Product of three numbers",
+      "link": "https://codeforces.com/problemset/problem/1294/C"
+    },
+    {
+      "name": "Just Eat It!",
+      "link": "https://codeforces.com/problemset/problem/1285/B"
+    },
+    {
+      "name": "Balanced Tunnel",
+      "link": "https://codeforces.com/problemset/problem/1237/B"
+    },
+    {
+      "name": "WOW Factor",
+      "link": "https://codeforces.com/problemset/problem/1178/B"
+    },
+    {
+      "name": "Alyona and a Narrow Fridge",
+      "link": "https://codeforces.com/problemset/problem/1119/B"
+    },
+    {
+      "name": "Good Array",
+      "link": "https://codeforces.com/problemset/problem/1077/C"
+    },
+    {
+      "name": "Mahmoud and Ehab and the bipartiteness",
+      "link": "https://codeforces.com/problemset/problem/862/B"
+    },
+    {
+      "name": "Average Sleep Time",
+      "link": "https://codeforces.com/problemset/problem/808/B"
+    },
+    {
+      "name": "Simple Strings",
+      "link": "https://codeforces.com/problemset/problem/665/C"
+    }
+  ],
+  "1400": [
+    {
+      "name": "Anna and the Valentine's Day Gift",
+      "link": "https://codeforces.com/problemset/problem/1931/E"
+    },
+    {
+      "name": "Grouping Increases",
+      "link": "https://codeforces.com/problemset/problem/1919/C"
+    },
+    {
+      "name": "Jumping Through Segments",
+      "link": "https://codeforces.com/problemset/problem/1907/D"
+    },
+    {
+      "name": "Array Game",
+      "link": "https://codeforces.com/problemset/problem/1904/C"
+    },
+    {
+      "name": "Dances (Easy version)",
+      "link": "https://codeforces.com/problemset/problem/1883/G1"
+    },
+    {
+      "name": "Iva & Pav",
+      "link": "https://codeforces.com/problemset/problem/1878/E"
+    },
+    {
+      "name": "Bracket Coloring",
+      "link": "https://codeforces.com/problemset/problem/1837/D"
+    },
+    {
+      "name": "Copil Copac Draws Trees",
+      "link": "https://codeforces.com/problemset/problem/1830/A"
+    },
+    {
+      "name": "Hossam and Friends",
+      "link": "https://codeforces.com/problemset/problem/1771/B"
+    },
+    {
+      "name": "Make It Round",
+      "link": "https://codeforces.com/problemset/problem/1759/D"
+    },
+    {
+      "name": "Add Modulo 10",
+      "link": "https://codeforces.com/problemset/problem/1714/E"
+    },
+    {
+      "name": "Schedule Management",
+      "link": "https://codeforces.com/problemset/problem/1701/C"
+    },
+    {
+      "name": "2^Sort",
+      "link": "https://codeforces.com/problemset/problem/1692/G"
+    },
+    {
+      "name": "Weird Sum",
+      "link": "https://codeforces.com/problemset/problem/1648/A"
+    },
+    {
+      "name": "Fortune Telling",
+      "link": "https://codeforces.com/problemset/problem/1634/B"
+    },
+    {
+      "name": "Arranging The Sheep",
+      "link": "https://codeforces.com/problemset/problem/1520/E"
+    },
+    {
+      "name": "Berland Regional",
+      "link": "https://codeforces.com/problemset/problem/1519/C"
+    },
+    {
+      "name": "AND Sequences",
+      "link": "https://codeforces.com/problemset/problem/1513/B"
+    },
+    {
+      "name": "Ball in Berland",
+      "link": "https://codeforces.com/problemset/problem/1475/C"
+    },
+    {
+      "name": "Zero Remainder Array",
+      "link": "https://codeforces.com/problemset/problem/1374/D"
+    },
+    {
+      "name": "Johnny and Another Rating Drop",
+      "link": "https://codeforces.com/problemset/problem/1362/C"
+    },
+    {
+      "name": "Orac and Models",
+      "link": "https://codeforces.com/problemset/problem/1350/B"
+    },
+    {
+      "name": "Journey Planning",
+      "link": "https://codeforces.com/problemset/problem/1320/A"
+    },
+    {
+      "name": "The Number of Products",
+      "link": "https://codeforces.com/problemset/problem/1215/B"
+    },
+    {
+      "name": "Basketball Exercise",
+      "link": "https://codeforces.com/problemset/problem/1195/C"
+    },
+    {
+      "name": "Candy Box (easy version)",
+      "link": "https://codeforces.com/problemset/problem/1183/D"
+    },
+    {
+      "name": "News Distribution",
+      "link": "https://codeforces.com/problemset/problem/1167/C"
+    },
+    {
+      "name": "Lost Numbers",
+      "link": "https://codeforces.com/problemset/problem/1167/B"
+    },
+    {
+      "name": "Queen",
+      "link": "https://codeforces.com/problemset/problem/1143/C"
+    },
+    {
+      "name": "Tape",
+      "link": "https://codeforces.com/problemset/problem/1110/B"
+    },
+    {
+      "name": "Mashmokh and ACM",
+      "link": "https://codeforces.com/problemset/problem/414/B"
+    }
+  ],
+  "1500": [
+    {
+      "name": "Greetings",
+      "link": "https://codeforces.com/problemset/problem/1915/F"
+    },
+    {
+      "name": "Smilo and Monsters",
+      "link": "https://codeforces.com/problemset/problem/1891/C"
+    },
+    {
+      "name": "Block Sequence",
+      "link": "https://codeforces.com/problemset/problem/1881/E"
+    },
+    {
+      "name": "Data Structures Fan",
+      "link": "https://codeforces.com/problemset/problem/1872/E"
+    },
+    {
+      "name": "Tea Tasting",
+      "link": "https://codeforces.com/problemset/problem/1795/C"
+    },
+    {
+      "name": "Controllers",
+      "link": "https://codeforces.com/problemset/problem/1776/L"
+    },
+    {
+      "name": "Palindrome Basis",
+      "link": "https://codeforces.com/problemset/problem/1673/C"
+    },
+    {
+      "name": "Line Empire",
+      "link": "https://codeforces.com/problemset/problem/1659/C"
+    },
+    {
+      "name": "Factorials and Powers of Two",
+      "link": "https://codeforces.com/problemset/problem/1646/C"
+    },
+    {
+      "name": "AGAGA XOOORRR",
+      "link": "https://codeforces.com/problemset/problem/1516/B"
+    },
+    {
+      "name": "Eastern Exhibition",
+      "link": "https://codeforces.com/problemset/problem/1486/B"
+    },
+    {
+      "name": "13th Labour of Heracles",
+      "link": "https://codeforces.com/problemset/problem/1466/D"
+    },
+    {
+      "name": "Mortal Kombat Tower",
+      "link": "https://codeforces.com/problemset/problem/1418/C"
+    },
+    {
+      "name": "k-Amazing Numbers",
+      "link": "https://codeforces.com/problemset/problem/1416/A"
+    },
+    {
+      "name": "Balanced Bitstring",
+      "link": "https://codeforces.com/problemset/problem/1404/A"
+    },
+    {
+      "name": "Powered Addition",
+      "link": "https://codeforces.com/problemset/problem/1338/A"
+    },
+    {
+      "name": "K-Complete Word",
+      "link": "https://codeforces.com/problemset/problem/1332/C"
+    },
+    {
+      "name": "Ehab and Path-etic MEXs",
+      "link": "https://codeforces.com/problemset/problem/1325/C"
+    },
+    {
+      "name": "Count Subrectangles",
+      "link": "https://codeforces.com/problemset/problem/1323/B"
+    },
+    {
+      "name": "Zero Array",
+      "link": "https://codeforces.com/problemset/problem/1201/B"
+    },
+    {
+      "name": "Edgy Trees",
+      "link": "https://codeforces.com/problemset/problem/1139/C"
+    },
+    {
+      "name": "Zero Quantity Maximization",
+      "link": "https://codeforces.com/problemset/problem/1133/D"
+    },
+    {
+      "name": "Lunar New Year and a Wander",
+      "link": "https://codeforces.com/problemset/problem/1106/D"
+    },
+    {
+      "name": "Division and Union",
+      "link": "https://codeforces.com/problemset/problem/1101/C"
+    },
+    {
+      "name": "The Fair Nut and String",
+      "link": "https://codeforces.com/problemset/problem/1084/C"
+    },
+    {
+      "name": "Cut 'em all!",
+      "link": "https://codeforces.com/problemset/problem/982/C"
+    },
+    {
+      "name": "Nested Segments",
+      "link": "https://codeforces.com/problemset/problem/976/C"
+    },
+    {
+      "name": "Minimize the error",
+      "link": "https://codeforces.com/problemset/problem/960/B"
+    },
+    {
+      "name": "Pride",
+      "link": "https://codeforces.com/problemset/problem/891/A"
+    },
+    {
+      "name": "Two TVs",
+      "link": "https://codeforces.com/problemset/problem/845/C"
+    },
+    {
+      "name": "Little Girl and Maximum Sum",
+      "link": "https://codeforces.com/problemset/problem/276/C"
+    }
+  ],
+  "1600": [
+    {
+      "name": "Partitioning the Array",
+      "link": "https://codeforces.com/problemset/problem/1920/C"
+    },
+    {
+      "name": "Good Triples",
+      "link": "https://codeforces.com/problemset/problem/1907/E"
+    },
+    {
+      "name": "Decreasing String",
+      "link": "https://codeforces.com/problemset/problem/1886/C"
+    },
+    {
+      "name": "To Become Max",
+      "link": "https://codeforces.com/problemset/problem/1856/C"
+    },
+    {
+      "name": "Tracking Segments",
+      "link": "https://codeforces.com/problemset/problem/1843/E"
+    },
+    {
+      "name": "Round Dance",
+      "link": "https://codeforces.com/problemset/problem/1833/E"
+    },
+    {
+      "name": "Hits Different",
+      "link": "https://codeforces.com/problemset/problem/1829/G"
+    },
+    {
+      "name": "Shocking Arrangement",
+      "link": "https://codeforces.com/problemset/problem/1798/D"
+    },
+    {
+      "name": "Triangle Coloring",
+      "link": "https://codeforces.com/problemset/problem/1795/D"
+    },
+    {
+      "name": "Equal Frequencies",
+      "link": "https://codeforces.com/problemset/problem/1781/C"
+    },
+    {
+      "name": "Flexible String",
+      "link": "https://codeforces.com/problemset/problem/1778/C"
+    },
+    {
+      "name": "Interesting Sequence",
+      "link": "https://codeforces.com/problemset/problem/1775/C"
+    },
+    {
+      "name": "Sending a Sequence Over the Network",
+      "link": "https://codeforces.com/problemset/problem/1741/E"
+    },
+    {
+      "name": "Meeting on the Line",
+      "link": "https://codeforces.com/problemset/problem/1730/B"
+    },
+    {
+      "name": "Split Into Two Sets",
+      "link": "https://codeforces.com/problemset/problem/1702/E"
+    },
+    {
+      "name": "Fixed Point Guessing",
+      "link": "https://codeforces.com/problemset/problem/1698/D"
+    },
+    {
+      "name": "Maximum Product Strikes Back",
+      "link": "https://codeforces.com/problemset/problem/1660/D"
+    },
+    {
+      "name": "Make them Equal",
+      "link": "https://codeforces.com/problemset/problem/1633/D"
+    },
+    {
+      "name": "Keshi Is Throwing a Party",
+      "link": "https://codeforces.com/problemset/problem/1610/C"
+    },
+    {
+      "name": "Say No to Palindromes",
+      "link": "https://codeforces.com/problemset/problem/1555/D"
+    },
+    {
+      "name": "Erase and Extend (Easy Version)",
+      "link": "https://codeforces.com/problemset/problem/1537/E1"
+    },
+    {
+      "name": "Parsa's Humongous Tree",
+      "link": "https://codeforces.com/problemset/problem/1528/A"
+    },
+    {
+      "name": "Planar Reflections",
+      "link": "https://codeforces.com/problemset/problem/1498/C"
+    },
+    {
+      "name": "Advertising Agency",
+      "link": "https://codeforces.com/problemset/problem/1475/E"
+    },
+    {
+      "name": "Row GCD",
+      "link": "https://codeforces.com/problemset/problem/1458/A"
+    },
+    {
+      "name": "Chocolate Bunny",
+      "link": "https://codeforces.com/problemset/problem/1407/C"
+    },
+    {
+      "name": "Good Subarrays",
+      "link": "https://codeforces.com/problemset/problem/1398/C"
+    },
+    {
+      "name": "Array Walk",
+      "link": "https://codeforces.com/problemset/problem/1389/B"
+    },
+    {
+      "name": "Orac and LCM",
+      "link": "https://codeforces.com/problemset/problem/1349/A"
+    },
+    {
+      "name": "Linova and Kingdom",
+      "link": "https://codeforces.com/problemset/problem/1336/A"
+    },
+    {
+      "name": "Kuroni and Impossible Calculation",
+      "link": "https://codeforces.com/problemset/problem/1305/C"
+    }
+  ],
+  "1700": [
+    {
+      "name": "Maximum modulo equality",
+      "link": "https://codeforces.com/problemset/problem/2050/F"
+    },
+    {
+      "name": "Drunken Maze",
+      "link": "https://codeforces.com/problemset/problem/2041/D"
+    },
+    {
+      "name": "Tree Pruning",
+      "link": "https://codeforces.com/problemset/problem/2018/C"
+    },
+    {
+      "name": "Iris and Game on the Tree",
+      "link": "https://codeforces.com/problemset/problem/2006/A"
+    },
+    {
+      "name": "Ruler (hard version)",
+      "link": "https://codeforces.com/problemset/problem/1999/G2"
+    },
+    {
+      "name": "Swap Dilemma",
+      "link": "https://codeforces.com/problemset/problem/1983/D"
+    },
+    {
+      "name": "Beauty of the mountains",
+      "link": "https://codeforces.com/problemset/problem/1982/D"
+    },
+    {
+      "name": "Tandem Repeats?",
+      "link": "https://codeforces.com/problemset/problem/1948/D"
+    },
+    {
+      "name": "Chat Screenshots",
+      "link": "https://codeforces.com/problemset/problem/1931/F"
+    },
+    {
+      "name": "Neutral Tonality",
+      "link": "https://codeforces.com/problemset/problem/1893/B"
+    },
+    {
+      "name": "Sum of XOR Functions",
+      "link": "https://codeforces.com/problemset/problem/1879/D"
+    },
+    {
+      "name": "Ira and Flamenco",
+      "link": "https://codeforces.com/problemset/problem/1833/F"
+    },
+    {
+      "name": "Don't Blame Me",
+      "link": "https://codeforces.com/problemset/problem/1829/H"
+    },
+    {
+      "name": "Running Miles",
+      "link": "https://codeforces.com/problemset/problem/1826/D"
+    },
+    {
+      "name": "Magic Triples (Easy Version)",
+      "link": "https://codeforces.com/problemset/problem/1822/G1"
+    },
+    {
+      "name": "Fixed Prefix Permutations",
+      "link": "https://codeforces.com/problemset/problem/1792/D"
+    },
+    {
+      "name": "Quiz Master",
+      "link": "https://codeforces.com/problemset/problem/1777/C"
+    },
+    {
+      "name": "SlavicG's Favorite Problem",
+      "link": "https://codeforces.com/problemset/problem/1760/G"
+    },
+    {
+      "name": "Meta-set",
+      "link": "https://codeforces.com/problemset/problem/1735/D"
+    },
+    {
+      "name": "Even Subarrays",
+      "link": "https://codeforces.com/problemset/problem/1731/C"
+    },
+    {
+      "name": "Monoblock",
+      "link": "https://codeforces.com/problemset/problem/1715/C"
+    },
+    {
+      "name": "Rorororobot",
+      "link": "https://codeforces.com/problemset/problem/1709/D"
+    },
+    {
+      "name": "Zero Path",
+      "link": "https://codeforces.com/problemset/problem/1695/C"
+    },
+    {
+      "name": "Gambling",
+      "link": "https://codeforces.com/problemset/problem/1692/H"
+    },
+    {
+      "name": "Shifting String",
+      "link": "https://codeforces.com/problemset/problem/1690/F"
+    },
+    {
+      "name": "Road Optimization",
+      "link": "https://codeforces.com/problemset/problem/1625/C"
+    },
+    {
+      "name": "Training Session",
+      "link": "https://codeforces.com/problemset/problem/1598/D"
+    },
+    {
+      "name": "The Number of Imposters",
+      "link": "https://codeforces.com/problemset/problem/1594/D"
+    },
+    {
+      "name": "Moamen and XOR",
+      "link": "https://codeforces.com/problemset/problem/1557/C"
+    },
+    {
+      "name": "Kavi on Pairing Duty",
+      "link": "https://codeforces.com/problemset/problem/1528/B"
+    },
+    {
+      "name": "Baby Ehab Partitions Again",
+      "link": "https://codeforces.com/problemset/problem/1516/C"
+    }
+  ],
+  "1800": [
+    {
+      "name": "Gerrymandering",
+      "link": "https://codeforces.com/problemset/problem/2022/C"
+    },
+    {
+      "name": "Rendez-vous de Marian et Robin",
+      "link": "https://codeforces.com/problemset/problem/2014/E"
+    },
+    {
+      "name": "Money Buys Happiness",
+      "link": "https://codeforces.com/problemset/problem/1974/E"
+    },
+    {
+      "name": "Exam in MAC",
+      "link": "https://codeforces.com/problemset/problem/1935/D"
+    },
+    {
+      "name": "Bicycles",
+      "link": "https://codeforces.com/problemset/problem/1915/G"
+    },
+    {
+      "name": "Kim's Quest",
+      "link": "https://codeforces.com/problemset/problem/1912/K"
+    },
+    {
+      "name": "LuoTianyi and the Floating Islands (Easy Version)",
+      "link": "https://codeforces.com/problemset/problem/1824/B1"
+    },
+    {
+      "name": "A Wide, Wide Graph",
+      "link": "https://codeforces.com/problemset/problem/1805/D"
+    },
+    {
+      "name": "Friendly Spiders",
+      "link": "https://codeforces.com/problemset/problem/1775/D"
+    },
+    {
+      "name": "Lucky Permutation",
+      "link": "https://codeforces.com/problemset/problem/1768/D"
+    },
+    {
+      "name": "Sheikh (Easy version)",
+      "link": "https://codeforces.com/problemset/problem/1732/C1"
+    },
+    {
+      "name": "Moving Both Hands",
+      "link": "https://codeforces.com/problemset/problem/1725/M"
+    },
+    {
+      "name": "Recover an RBS",
+      "link": "https://codeforces.com/problemset/problem/1709/C"
+    },
+    {
+      "name": "Max GEQ Sum",
+      "link": "https://codeforces.com/problemset/problem/1691/D"
+    },
+    {
+      "name": "Explorer Space",
+      "link": "https://codeforces.com/problemset/problem/1517/D"
+    },
+    {
+      "name": "The Sports Festival",
+      "link": "https://codeforces.com/problemset/problem/1509/C"
+    },
+    {
+      "name": "Zookeeper and The Infinite Zoo",
+      "link": "https://codeforces.com/problemset/problem/1491/D"
+    },
+    {
+      "name": "Road Reform",
+      "link": "https://codeforces.com/problemset/problem/1468/J"
+    },
+    {
+      "name": "Apollo versus Pan",
+      "link": "https://codeforces.com/problemset/problem/1466/E"
+    },
+    {
+      "name": "The Treasure of The Segments",
+      "link": "https://codeforces.com/problemset/problem/1462/F"
+    },
+    {
+      "name": "Catching Cheaters",
+      "link": "https://codeforces.com/problemset/problem/1446/B"
+    },
+    {
+      "name": "Identify the Operations",
+      "link": "https://codeforces.com/problemset/problem/1442/B"
+    },
+    {
+      "name": "Chef Monocarp",
+      "link": "https://codeforces.com/problemset/problem/1437/C"
+    },
+    {
+      "name": "Maximum Distributed Tree",
+      "link": "https://codeforces.com/problemset/problem/1401/D"
+    },
+    {
+      "name": "Stoned Game",
+      "link": "https://codeforces.com/problemset/problem/1396/B"
+    },
+    {
+      "name": "Count Triangles",
+      "link": "https://codeforces.com/problemset/problem/1355/C"
+    },
+    {
+      "name": "Edge Weight Assignment",
+      "link": "https://codeforces.com/problemset/problem/1338/B"
+    },
+    {
+      "name": "Three Blocks Palindrome (hard version)",
+      "link": "https://codeforces.com/problemset/problem/1335/E2"
+    },
+    {
+      "name": "Irreducible Anagrams",
+      "link": "https://codeforces.com/problemset/problem/1290/B"
+    },
+    {
+      "name": "Numbers on Tree",
+      "link": "https://codeforces.com/problemset/problem/1286/B"
+    },
+    {
+      "name": "Christmas Trees",
+      "link": "https://codeforces.com/problemset/problem/1283/D"
+    }
+  ],
+  "1900": [
+    {
+      "name": "Easy Demon Problem",
+      "link": "https://codeforces.com/problemset/problem/2044/F"
+    },
+    {
+      "name": "Recommendations",
+      "link": "https://codeforces.com/problemset/problem/2042/D"
+    },
+    {
+      "name": "XORificator 3000",
+      "link": "https://codeforces.com/problemset/problem/2036/F"
+    },
+    {
+      "name": "Robin Hood Archery",
+      "link": "https://codeforces.com/problemset/problem/2014/H"
+    },
+    {
+      "name": "Yunli's Subarray Queries (easy version)",
+      "link": "https://codeforces.com/problemset/problem/2009/G1"
+    },
+    {
+      "name": "Longest Max Min Subsequence",
+      "link": "https://codeforces.com/problemset/problem/2001/D"
+    },
+    {
+      "name": "Funny Game",
+      "link": "https://codeforces.com/problemset/problem/1994/D"
+    },
+    {
+      "name": "Valuable Cards",
+      "link": "https://codeforces.com/problemset/problem/1992/F"
+    },
+    {
+      "name": "Non-academic Problem",
+      "link": "https://codeforces.com/problemset/problem/1986/F"
+    },
+    {
+      "name": "A BIT of an Inequality",
+      "link": "https://codeforces.com/problemset/problem/1957/D"
+    },
+    {
+      "name": "Shuffling Songs",
+      "link": "https://codeforces.com/problemset/problem/1950/G"
+    },
+    {
+      "name": "Feed Cats",
+      "link": "https://codeforces.com/problemset/problem/1932/F"
+    },
+    {
+      "name": "Good Trip",
+      "link": "https://codeforces.com/problemset/problem/1925/D"
+    },
+    {
+      "name": "Blocking Elements",
+      "link": "https://codeforces.com/problemset/problem/1918/D"
+    },
+    {
+      "name": "Accumulator Apex",
+      "link": "https://codeforces.com/problemset/problem/1912/A"
+    },
+    {
+      "name": "Merge Not Sort",
+      "link": "https://codeforces.com/problemset/problem/1906/E"
+    },
+    {
+      "name": "Collapsing Strings",
+      "link": "https://codeforces.com/problemset/problem/1902/E"
+    },
+    {
+      "name": "Absolute Beauty",
+      "link": "https://codeforces.com/problemset/problem/1898/D"
+    },
+    {
+      "name": "Tree XOR",
+      "link": "https://codeforces.com/problemset/problem/1882/D"
+    },
+    {
+      "name": "Tenzing and His Animal Friends",
+      "link": "https://codeforces.com/problemset/problem/1842/D"
+    },
+    {
+      "name": "The Butcher",
+      "link": "https://codeforces.com/problemset/problem/1819/B"
+    },
+    {
+      "name": "Fish Graph",
+      "link": "https://codeforces.com/problemset/problem/1817/B"
+    },
+    {
+      "name": "Hot Start Up (easy version)",
+      "link": "https://codeforces.com/problemset/problem/1799/D1"
+    },
+    {
+      "name": "Counting Factorizations",
+      "link": "https://codeforces.com/problemset/problem/1794/D"
+    },
+    {
+      "name": "Score of a Tree",
+      "link": "https://codeforces.com/problemset/problem/1777/D"
+    },
+    {
+      "name": "Restore the Permutation",
+      "link": "https://codeforces.com/problemset/problem/1759/G"
+    },
+    {
+      "name": "Yet Another Problem",
+      "link": "https://codeforces.com/problemset/problem/1747/D"
+    },
+    {
+      "name": "Divisible Numbers (hard version)",
+      "link": "https://codeforces.com/problemset/problem/1744/E2"
+    },
+    {
+      "name": "Reset K Edges",
+      "link": "https://codeforces.com/problemset/problem/1739/D"
+    },
+    {
+      "name": "2+ doors",
+      "link": "https://codeforces.com/problemset/problem/1715/D"
+    },
+    {
+      "name": "River Locks",
+      "link": "https://codeforces.com/problemset/problem/1700/D"
+    }
+  ]
+}

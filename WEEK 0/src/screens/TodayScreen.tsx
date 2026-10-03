@@ -4,9 +4,11 @@ import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { todaysBusyBlocks } from '../calendar';
 import { CfError, type Problem, type RatingChange, isSolved, problemId, problemset, upcomingContests, userRating, userStatus } from '../cf';
 import { MODEL_SIZE_LABEL, canRunGemma, downloadModel, isDownloading, isModelDownloaded } from '../gemma';
-import { type Today, candidates, dailyTarget, pickDeterministic, recentContestId, shortlist, upsolve, withoutTags } from '../plan';
+import cp31 from '../cp31.json';
+import { type Today, candidates, dailyTarget, pickDeterministic, recentContestId, sheetQueue, sheetSpots, shortlist, upsolve, withoutTags } from '../plan';
 import { CardStack } from '../CardStack';
 import { DayTrees } from '../DayTrees';
+import { updateTodayWidget } from '../widgetTaskHandler';
 import { type Session, forest, loadSessions } from '../sessions';
 import { type Settings, daysUntil } from '../settings';
 import { heatmap, solvesByDay, streaks } from '../stats';
@@ -26,9 +28,10 @@ type Loaded = {
 };
 
 // The day's suggestions are picked once and kept, so a refresh never reshuffles them.
-type DayPlan = { day: string; handle: string; excludedTags: string; perTarget: number; problems: Problem[] };
+type DayPlan = { key: string; problems: Problem[] };
 
 const PLAN_KEY = 'plan';
+const CP31_SPOTS = sheetSpots(cp31);
 // Twice the target, so there's room to skip what doesn't appeal.
 const SUGGESTIONS_PER_TARGET = 2;
 const UNRATED_START = 800;
@@ -56,25 +59,42 @@ async function buildPlan(
   now: Date,
   rating: number,
   today: Today,
-  solved: Set<string>,
+  solvedAt: Map<string, number>,
   ratingChanges: RatingChange[],
 ): Promise<Problem[]> {
-  const problems = withoutTags(await problemset(), settings.excludedTags);
+  const solved = new Set(solvedAt.keys());
+  const all = await problemset();
+  const problems = withoutTags(all, settings.excludedTags);
   const contestId = recentContestId(ratingChanges, now);
   const upsolves = contestId ? upsolve(contestId, problems, solved).slice(0, today.problems) : [];
-  const options = shortlist(candidates(problems, solved, rating));
-  return [...upsolves, ...pickDeterministic(options, SUGGESTIONS_PER_TARGET * today.problems - upsolves.length)];
+  // An upsolve can also be on the sheet; it shouldn't show twice.
+  const upsolveIds = new Set(upsolves.map(problemId));
+  const fresh = (list: Problem[]) => list.filter((p) => !upsolveIds.has(problemId(p)));
+  const wanted = SUGGESTIONS_PER_TARGET * today.problems - upsolves.length;
+  const chosen = settings.practiceRating ?? undefined;
+  const picks =
+    settings.problemSource === 'cp31'
+      ? // The full set, so a sheet problem with a skipped tag is found with its tags and then dropped.
+        fresh(withoutTags(sheetQueue(cp31, all, solvedAt, rating, chosen), settings.excludedTags)).slice(0, wanted)
+      : pickDeterministic(fresh(shortlist(candidates(problems, solved, chosen ?? rating))), wanted);
+  return [...upsolves, ...picks];
 }
 
-// A calendar change can move the target mid-day; that alone never reshuffles the suggestions.
+// Any of these changing picks a new list. A calendar change can move the target mid-day; that alone never does.
 async function todaysPlan(settings: Settings, pick: () => Promise<Problem[]>): Promise<Problem[]> {
-  const key = { day: new Date().toDateString(), handle: settings.handle, excludedTags: [...settings.excludedTags].sort().join(), perTarget: SUGGESTIONS_PER_TARGET };
+  const key = JSON.stringify({
+    day: new Date().toDateString(),
+    handle: settings.handle,
+    excludedTags: [...settings.excludedTags].sort(),
+    source: settings.problemSource,
+    practiceRating: settings.practiceRating,
+    perTarget: SUGGESTIONS_PER_TARGET,
+  });
   const stored = await AsyncStorage.getItem(PLAN_KEY);
   const plan = stored ? (JSON.parse(stored) as DayPlan) : null;
-  if (plan && plan.day === key.day && plan.handle === key.handle && plan.excludedTags === key.excludedTags && plan.perTarget === key.perTarget)
-    return plan.problems;
+  if (plan?.key === key) return plan.problems;
   const problems = await pick();
-  await AsyncStorage.setItem(PLAN_KEY, JSON.stringify({ ...key, problems }));
+  await AsyncStorage.setItem(PLAN_KEY, JSON.stringify({ key, problems }));
   return problems;
 }
 
@@ -84,16 +104,37 @@ async function load(settings: Settings): Promise<Loaded> {
   const ratingChanges = await userRating(settings.handle);
   const rating = ratingChanges.at(-1)?.newRating ?? UNRATED_START;
   const submissions = await userStatus(settings.handle);
-  const solved = new Set(submissions.filter(isSolved).map((s) => problemId(s.problem)));
+  // When he last got each problem accepted; the sheet continues from his most recent sheet solve.
+  const solvedAt = new Map<string, number>();
+  const markSolved = (id: string, at: number) => solvedAt.set(id, Math.max(solvedAt.get(id) ?? 0, at));
+  for (const s of submissions.filter(isSolved)) markSolved(problemId(s.problem), s.creationTimeSeconds * 1000);
   const sessions = await loadSessions();
-  for (const s of sessions) {
-    if (s.outcome === 'grown') solved.add(s.problemId);
-  }
+  for (const s of sessions) if (s.outcome === 'grown') markSolved(s.problemId, s.at);
   const busy = await todaysBusyBlocks(now).catch(() => []);
   const today = dailyTarget(now, busy, await upcomingContests(), settings.targets);
-  const plan = await todaysPlan(settings, () => buildPlan(settings, now, rating, today, solved, ratingChanges));
+  const plan = await todaysPlan(settings, () => buildPlan(settings, now, rating, today, solvedAt, ratingChanges));
 
-  return { rating, today, plan, solved, byDay: solvesByDay(submissions), sessions };
+  return { rating, today, plan, solved: new Set(solvedAt.keys()), byDay: solvesByDay(submissions), sessions };
+}
+
+type CardLabelProps = { problem: Problem; place: number; of: number; settings: Settings; contestDay: boolean };
+
+/** "#6 CP-31 · 1400" for a sheet problem; an upsolve or a by-rating pick says what it is instead. */
+function CardLabel({ problem, place, of, settings, contestDay }: CardLabelProps) {
+  const spot = settings.problemSource === 'cp31' ? CP31_SPOTS.get(problemId(problem)) : undefined;
+  const contest = contestDay ? ' · CONTEST DAY' : '';
+  if (!spot) {
+    const what = settings.problemSource === 'cp31' ? 'UPSOLVE · LAST CONTEST' : `SUGGESTED · ${place} OF ${of}`;
+    return <Mono color={colors.muted} size={12}>{what}{contest}</Mono>;
+  }
+  return (
+    <View style={styles.label}>
+      <Mono bold size={12} color={settings.accent}>#{spot.position}</Mono>
+      <Mono color={colors.muted} size={12}>
+        CP-31{settings.showRatings ? ` · ${spot.level}` : ''}{contest}
+      </Mono>
+    </View>
+  );
 }
 
 const heatColor = (count: number, accent: string) =>
@@ -117,6 +158,13 @@ export function TodayScreen({ settings, onFocus }: Props) {
       cachedDay = new Date().toDateString();
       stale = false;
       setData(loaded);
+      updateTodayWidget({
+        day: new Date().toDateString(),
+        target: loaded.today.problems,
+        targets: settings.targets,
+        accent: settings.accent,
+        solves: [...loaded.byDay],
+      });
     } catch (e) {
       setError(e instanceof CfError ? e.message : 'something broke while planning. pull to retry.');
     } finally {
@@ -178,13 +226,16 @@ export function TodayScreen({ settings, onFocus }: Props) {
               nextLabel="next suggested problem"
               renderCard={(p) => (
                 <>
-                  <Mono color={colors.muted} size={12}>
-                    SUGGESTED · {suggestions.indexOf(p) + 1} OF {suggestions.length}
-                    {data.today.contestToday ? ' · CONTEST DAY' : ''}
-                  </Mono>
+                  <CardLabel
+                    problem={p}
+                    place={suggestions.indexOf(p) + 1}
+                    of={suggestions.length}
+                    settings={settings}
+                    contestDay={data.today.contestToday}
+                  />
                   <View style={styles.cardRow}>
                     <View style={styles.grow}>
-                      <Mono bold size={18} numberOfLines={2}>{p.name}</Mono>
+                      <Mono bold size={18} numberOfLines={1}>{p.name}</Mono>
                       <View style={styles.chips}>
                         {settings.showRatings && <Chip label={String(p.rating ?? 'unrated')} color={accent} />}
                         <Chip label={problemId(p)} />
@@ -264,6 +315,7 @@ const styles = StyleSheet.create({
   content: { gap: 16, paddingBottom: 96 },
   fill: { flexGrow: 1 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 },
+  label: { flexDirection: 'row', alignItems: 'baseline', gap: 8 },
   cardRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginTop: 4 },
   grow: { flex: 1 },
   top: { marginTop: 12 },
