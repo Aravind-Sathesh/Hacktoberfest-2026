@@ -26,6 +26,7 @@ export function SettingsScreen({ settings, onSaved }: Props) {
   const [goalDate, setGoalDate] = useState(settings.goalDate);
   const [accent, setAccent] = useState(settings.accent);
   const [showTags, setShowTags] = useState(settings.showTags);
+  const [showRatings, setShowRatings] = useState(settings.showRatings);
   const [excludedTags, setExcludedTags] = useState(settings.excludedTags);
   const [tags, setTags] = useState<string[]>([]);
   const [weekdayProblems, setWeekdayProblems] = useState(String(settings.targets.weekday.problems));
@@ -56,6 +57,7 @@ export function SettingsScreen({ settings, onSaved }: Props) {
         goalDate,
         accent,
         showTags,
+        showRatings,
         excludedTags,
         targets: {
           weekday: { problems: wdProblems, minutes: wdMinutes },
@@ -101,6 +103,16 @@ export function SettingsScreen({ settings, onSaved }: Props) {
             accessibilityLabel="show problem tags"
             value={showTags}
             onValueChange={setShowTags}
+            trackColor={{ true: accent, false: colors.border }}
+            thumbColor={colors.foreground}
+          />
+        </View>
+        <View style={styles.row}>
+          <Mono color={colors.muted}>show problem ratings</Mono>
+          <Switch
+            accessibilityLabel="show problem ratings"
+            value={showRatings}
+            onValueChange={setShowRatings}
             trackColor={{ true: accent, false: colors.border }}
             thumbColor={colors.foreground}
           />

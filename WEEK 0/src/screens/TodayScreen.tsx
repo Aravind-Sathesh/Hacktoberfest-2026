@@ -1,9 +1,11 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { todaysBusyBlocks } from '../calendar';
 import { CfError, type Problem, type RatingChange, isSolved, problemId, problemset, upcomingContests, userRating, userStatus } from '../cf';
 import { MODEL_SIZE_LABEL, canRunGemma, downloadModel, isDownloading, isModelDownloaded } from '../gemma';
 import { type Today, candidates, dailyTarget, pickDeterministic, recentContestId, shortlist, upsolve, withoutTags } from '../plan';
+import { CardStack } from '../CardStack';
 import { DayTrees } from '../DayTrees';
 import { type Session, forest, loadSessions } from '../sessions';
 import { type Settings, daysUntil } from '../settings';
@@ -11,17 +13,24 @@ import { heatmap, solvesByDay, streaks } from '../stats';
 import { colors } from '../theme';
 import { Button, Card, Chip, Divider, Mono, PulsingLogo, Stat } from '../ui';
 
-type Props = { settings: Settings; onFocus: (problem: Problem) => void };
+/** No problem means he picks it on the focus screen. */
+type Props = { settings: Settings; onFocus: (problem?: Problem) => void };
 
 type Loaded = {
   rating: number;
   today: Today;
-  queue: Problem[];
+  plan: Problem[];
   solved: Set<string>;
   byDay: Map<string, number>;
   sessions: Session[];
 };
 
+// The day's suggestions are picked once and kept, so a refresh never reshuffles them.
+type DayPlan = { day: string; handle: string; excludedTags: string; perTarget: number; problems: Problem[] };
+
+const PLAN_KEY = 'plan';
+// Twice the target, so there's room to skip what doesn't appeal.
+const SUGGESTIONS_PER_TARGET = 2;
 const UNRATED_START = 800;
 const HEATMAP_WEEKS = 16;
 
@@ -42,7 +51,7 @@ export const forgetToday = () => {
 
 const hoursAndMinutes = (minutes: number) => `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 
-async function buildQueue(
+async function buildPlan(
   settings: Settings,
   now: Date,
   rating: number,
@@ -54,7 +63,19 @@ async function buildQueue(
   const contestId = recentContestId(ratingChanges, now);
   const upsolves = contestId ? upsolve(contestId, problems, solved).slice(0, today.problems) : [];
   const options = shortlist(candidates(problems, solved, rating));
-  return [...upsolves, ...pickDeterministic(options, options.length)];
+  return [...upsolves, ...pickDeterministic(options, SUGGESTIONS_PER_TARGET * today.problems - upsolves.length)];
+}
+
+// A calendar change can move the target mid-day; that alone never reshuffles the suggestions.
+async function todaysPlan(settings: Settings, pick: () => Promise<Problem[]>): Promise<Problem[]> {
+  const key = { day: new Date().toDateString(), handle: settings.handle, excludedTags: [...settings.excludedTags].sort().join(), perTarget: SUGGESTIONS_PER_TARGET };
+  const stored = await AsyncStorage.getItem(PLAN_KEY);
+  const plan = stored ? (JSON.parse(stored) as DayPlan) : null;
+  if (plan && plan.day === key.day && plan.handle === key.handle && plan.excludedTags === key.excludedTags && plan.perTarget === key.perTarget)
+    return plan.problems;
+  const problems = await pick();
+  await AsyncStorage.setItem(PLAN_KEY, JSON.stringify({ ...key, problems }));
+  return problems;
 }
 
 async function load(settings: Settings): Promise<Loaded> {
@@ -70,9 +91,9 @@ async function load(settings: Settings): Promise<Loaded> {
   }
   const busy = await todaysBusyBlocks(now).catch(() => []);
   const today = dailyTarget(now, busy, await upcomingContests(), settings.targets);
-  const queue = await buildQueue(settings, now, rating, today, solved, ratingChanges);
+  const plan = await todaysPlan(settings, () => buildPlan(settings, now, rating, today, solved, ratingChanges));
 
-  return { rating, today, queue, solved, byDay: solvesByDay(submissions), sessions };
+  return { rating, today, plan, solved, byDay: solvesByDay(submissions), sessions };
 }
 
 const heatColor = (count: number, accent: string) =>
@@ -82,7 +103,6 @@ export function TodayScreen({ settings, onFocus }: Props) {
   const [data, setData] = useState<Loaded | null>(() => cacheFor(settings));
   const [loading, setLoading] = useState(!cacheFor(settings) || stale);
   const [error, setError] = useState<string | null>(null);
-  const [skipped, setSkipped] = useState(0);
   const [download, setDownload] = useState<number | null>(null);
   const [modelReady, setModelReady] = useState(isModelDownloaded());
   const accent = settings.accent;
@@ -90,7 +110,6 @@ export function TodayScreen({ settings, onFocus }: Props) {
   const refresh = useCallback(async () => {
     setLoading(true);
     setError(null);
-    setSkipped(0);
     try {
       const loaded = await load(settings);
       cachedData = loaded;
@@ -133,9 +152,9 @@ export function TodayScreen({ settings, onFocus }: Props) {
   }
 
   const now = new Date();
-  const unsolved = (problems: Problem[]) => (data ? problems.filter((p) => !data.solved.has(problemId(p))) : []);
-  const todo = unsolved(data?.queue ?? []);
-  const current = todo.length ? todo[skipped % todo.length] : undefined;
+  const isDone = (p: Problem) => data?.solved.has(problemId(p)) ?? false;
+  // What's left comes first, so the first card is always the next one to do.
+  const suggestions = data ? [...data.plan].sort((a, b) => Number(isDone(a)) - Number(isDone(b))) : [];
   const done = data?.byDay.get(now.toDateString()) ?? 0;
   const { current: streak, best } = data ? streaks(data.byDay, now) : { current: 0, best: 0 };
   const trees = data ? forest(data.sessions) : { grown: 0, dead: 0 };
@@ -152,32 +171,42 @@ export function TodayScreen({ settings, onFocus }: Props) {
 
       {data && (
         <>
-          <Card>
-            <Mono color={colors.muted} size={12}>
-              {current ? `PROBLEM ${done + 1}` : 'TODAY'}
-              {data.today.contestToday ? ' · CONTEST DAY' : ''}
-            </Mono>
-            {current ? (
-              <>
-                <Mono bold size={20}>{current.name}</Mono>
-                <View style={styles.chips}>
-                  <Chip label={String(current.rating ?? 'unrated')} color={accent} />
-                  <Chip label={problemId(current)} />
-                  {settings.showTags && current.tags.map((t) => <Chip key={t} label={t} />)}
-                </View>
-                <View style={styles.actions}>
-                  <Button label="start focus" icon="play" onPress={() => onFocus(current)} accent={accent} style={styles.grow} />
-                  {todo.length > 1 && (
-                    <Button label="skip" icon="skip-forward" iconOnly onPress={() => setSkipped((n) => n + 1)} accent={accent} variant="outline" />
-                  )}
-                </View>
-              </>
-            ) : (
-              <Mono bold size={18}>
-                nothing planned today.
-              </Mono>
-            )}
-          </Card>
+          {suggestions.length ? (
+            <CardStack
+              items={suggestions}
+              keyOf={problemId}
+              nextLabel="next suggested problem"
+              renderCard={(p) => (
+                <>
+                  <Mono color={colors.muted} size={12}>
+                    SUGGESTED · {suggestions.indexOf(p) + 1} OF {suggestions.length}
+                    {data.today.contestToday ? ' · CONTEST DAY' : ''}
+                  </Mono>
+                  <View style={styles.cardRow}>
+                    <View style={styles.grow}>
+                      <Mono bold size={18} numberOfLines={2}>{p.name}</Mono>
+                      <View style={styles.chips}>
+                        {settings.showRatings && <Chip label={String(p.rating ?? 'unrated')} color={accent} />}
+                        <Chip label={problemId(p)} />
+                        {settings.showTags && p.tags.map((t) => <Chip key={t} label={t} />)}
+                      </View>
+                    </View>
+                    {isDone(p) ? (
+                      <Chip label="solved" color={accent} />
+                    ) : (
+                      <Button label={`focus on ${p.name}`} icon="play" iconOnly onPress={() => onFocus(p)} accent={accent} />
+                    )}
+                  </View>
+                </>
+              )}
+            />
+          ) : (
+            <Card>
+              <Mono bold size={18}>nothing suggested today.</Mono>
+            </Card>
+          )}
+
+          <Button label="start focus" icon="play" onPress={() => onFocus()} accent={accent} />
 
           <Card>
             <Stat label="rating" icon="trending-up" value={data.rating} color={accent} />
@@ -235,7 +264,7 @@ const styles = StyleSheet.create({
   content: { gap: 16, paddingBottom: 96 },
   fill: { flexGrow: 1 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 },
-  actions: { flexDirection: 'row', gap: 10, marginTop: 16 },
+  cardRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12, marginTop: 4 },
   grow: { flex: 1 },
   top: { marginTop: 12 },
   heatmap: { flexDirection: 'row', gap: 4, marginTop: 10 },

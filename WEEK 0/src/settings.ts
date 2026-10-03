@@ -9,6 +9,8 @@ export type Settings = {
   accent: string;
   /** Tags hint at the approach, so they're hidden unless he wants them. */
   showTags: boolean;
+  /** Some people solve better not knowing how hard it's supposed to be. */
+  showRatings: boolean;
   /** Problems with any of these tags are never picked. */
   excludedTags: string[];
   targets: Targets;
@@ -22,6 +24,7 @@ export const DEFAULT_SETTINGS: Settings = {
   goalDate: `${new Date().getFullYear()}-12-31`,
   accent: ACCENTS[0],
   showTags: false,
+  showRatings: true,
   excludedTags: [],
   targets: {
     weekday: { problems: 4, minutes: 150 },

@@ -1,13 +1,13 @@
 import { useKeepAwake } from 'expo-keep-awake';
 import React, { useEffect, useRef, useState } from 'react';
-import { AppState, BackHandler, StyleSheet, View, useWindowDimensions } from 'react-native';
-import { type Problem, isSolved, problemId, userStatus } from '../cf';
+import { AppState, BackHandler, StyleSheet, TextInput, View, useWindowDimensions } from 'react-native';
+import { type Problem, findProblem, isSolved, problemId, problemset, userStatus } from '../cf';
 import { EditorialLoader } from '../EditorialLoader';
 import { canRunGemma, hints, isModelDownloaded, roast } from '../gemma';
 import { HintStack } from '../HintStack';
 import type { RoastEvent } from '../prompts';
 import { addSession } from '../sessions';
-import { colors } from '../theme';
+import { colors, fonts, radius } from '../theme';
 import { FULL_GROWTH_MINUTES, Tree } from '../Tree';
 import { Button, Dialog, Mono } from '../ui';
 
@@ -15,6 +15,7 @@ type Props = {
   problem: Problem;
   handle: string;
   accent: string;
+  showRating: boolean;
   onDone: () => void;
   onGrown: () => void;
 };
@@ -30,7 +31,75 @@ const clock = (ms: number) => {
   return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
 };
 
-export function FocusScreen({ problem, handle, accent, onDone, onGrown }: Props) {
+/** Starting without a problem asks for one first: the hints need to know which problem it is. */
+export function FocusScreen({ problem, ...rest }: Omit<Props, 'problem'> & { problem?: Problem }) {
+  const [picked, setPicked] = useState(problem);
+  return picked ? (
+    <FocusSession problem={picked} {...rest} />
+  ) : (
+    <ProblemEntry accent={rest.accent} onPick={setPicked} onCancel={rest.onDone} />
+  );
+}
+
+type EntryProps = { accent: string; onPick: (problem: Problem) => void; onCancel: () => void };
+
+function ProblemEntry({ accent, onPick, onCancel }: EntryProps) {
+  const [typed, setTyped] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [looking, setLooking] = useState(false);
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      onCancel();
+      return true;
+    });
+    return () => sub.remove();
+  }, [onCancel]);
+
+  async function start() {
+    if (!typed.trim() || looking) return;
+    setLooking(true);
+    setError(null);
+    try {
+      const found = findProblem(await problemset(), typed);
+      if (found) onPick(found);
+      else setError(`codeforces has no problem ${typed.trim()}. it looks like 1520D.`);
+    } catch {
+      setError("couldn't reach codeforces to look it up. try again in a bit.");
+    } finally {
+      setLooking(false);
+    }
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.topBar}>
+        <Button label='back to today' icon='arrow-left' iconOnly onPress={onCancel} accent={accent} variant='outline' />
+        <Mono bold>which problem?</Mono>
+      </View>
+      <View style={styles.entry}>
+        <Mono color={colors.muted}>enter the problem number so gemma can line up hints for it.</Mono>
+        <TextInput
+          accessibilityLabel='problem number'
+          value={typed}
+          onChangeText={setTyped}
+          onSubmitEditing={start}
+          placeholder='1520D'
+          placeholderTextColor={colors.muted}
+          autoCapitalize='characters'
+          autoCorrect={false}
+          autoFocus
+          returnKeyType='go'
+          style={styles.input}
+        />
+        {error && <Mono color={colors.danger}>{error}</Mono>}
+        <Button label={looking ? 'looking it up…' : 'start focus'} icon='play' onPress={start} accent={accent} disabled={looking || !typed.trim()} />
+      </View>
+    </View>
+  );
+}
+
+function FocusSession({ problem, handle, accent, showRating, onDone, onGrown }: Props) {
   // He solves on his pc; the phone sits awake beside him. Sleep would count as leaving.
   useKeepAwake();
 
@@ -191,7 +260,7 @@ export function FocusScreen({ problem, handle, accent, onDone, onGrown }: Props)
             {problem.name}
           </Mono>
           <Mono color={colors.muted} size={12}>
-            {id} · {problem.rating ?? 'unrated'}
+            {showRating ? `${id} · ${problem.rating ?? 'unrated'}` : id}
           </Mono>
         </View>
         {growing && (
@@ -275,4 +344,14 @@ const styles = StyleSheet.create({
   title: { flex: 1 },
   treeArea: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
   line: { textAlign: 'center' },
+  entry: { flex: 1, justifyContent: 'center', gap: 12 },
+  input: {
+    minHeight: 56,
+    color: colors.foreground,
+    fontFamily: fonts.bold,
+    fontSize: 22,
+    backgroundColor: colors.surface,
+    borderRadius: radius,
+    paddingHorizontal: 16,
+  },
 });

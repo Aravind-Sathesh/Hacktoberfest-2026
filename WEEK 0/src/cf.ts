@@ -39,6 +39,14 @@ export class CfError extends Error {}
 
 export const problemId = (p: Pick<Problem, 'contestId' | 'index'>): string => `${p.contestId}${p.index}`;
 
+/** The problem he typed, like "1520d" or "1520 D", or null if Codeforces has no such problem. */
+export function findProblem(problems: Problem[], typed: string): Problem | null {
+  const match = typed.replace(/\s+/g, '').toUpperCase().match(/^(\d+)([A-Z]\d?)$/);
+  if (!match) return null;
+  const [, contestId, index] = match;
+  return problems.find((p) => p.contestId === Number(contestId) && p.index === index) ?? null;
+}
+
 export const isSolved = (s: Submission): boolean => s.verdict === 'OK';
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));

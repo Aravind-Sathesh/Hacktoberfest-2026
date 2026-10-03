@@ -19,7 +19,7 @@ import { colors } from './src/theme';
 import type { IconName } from './src/ui';
 
 type Tab = 'today' | 'history' | 'settings';
-type Screen = { name: Tab } | { name: 'focus'; problem: Problem };
+type Screen = { name: Tab } | { name: 'focus'; problem?: Problem };
 
 const TABS: { name: Tab; icon: IconName }[] = [
   { name: 'today', icon: 'home' },
@@ -95,7 +95,7 @@ export default function App(): React.JSX.Element | null {
     return (
       <View style={styles.container}>
         <StatusBar style="light" />
-        <FocusScreen problem={screen.problem} handle={settings.handle} accent={settings.accent} onDone={goToday} onGrown={forgetToday} />
+        <FocusScreen problem={screen.problem} handle={settings.handle} accent={settings.accent} showRating={settings.showRatings} onDone={goToday} onGrown={forgetToday} />
       </View>
     );
   }

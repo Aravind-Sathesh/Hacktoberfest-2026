@@ -57,9 +57,9 @@ Instructions for coding agents (GitHub Copilot and others) working in this repo.
 A clean, minimal app UI that uses **JetBrains Mono** as its typeface. It should not look like a terminal: no brackets, no ASCII art.
 - Dark theme only. Rounded cards (`Card`), filled/outline buttons (`Button`), label-left/value-right stat rows (`Stat`). All of these live in `src/ui.tsx`; reuse them.
 - Icons: Feather from `@expo/vector-icons` only. Keep them minimal.
-- Today shows **one problem at a time** (start focus / skip), then the stats dashboard, then the streak grid.
+- Today shows the day's suggested problems as a **wallet-style card stack** (`src/CardStack.tsx`; picked once a day, a refresh never reshuffles them, each card has a small focus button), then a full-width **start focus** that asks for the problem number, then the stats, the daily tree row and the streak grid.
 - Focus is a **full-screen tree** (`src/Tree.tsx`, drawn with plain views) with a timer and a stack of hint cards (`src/HintStack.tsx`: hold to reveal the next, swipe back through seen ones). No chat. He solves on his PC, so the app never shows the problem.
-- The accent color, goal and show/hide tags come from Settings. Never hardcode Rajeev's handle, rating or goal in the UI.
+- The accent color, goal, show/hide tags and show/hide ratings come from Settings. Never hardcode Rajeev's handle, rating or goal in the UI.
 - Touch targets must be at least 44dp, and icon-only buttons need an accessibility label.
 
 ## Prompts (Gemma)
