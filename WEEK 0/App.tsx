@@ -39,6 +39,8 @@ function NavPill({ active, accent, onSelect, behind }: NavPillProps) {
       style={styles.pill}
       accessibilityRole="tablist"
     >
+      {/* Its own layer: as the BlurView's background the blur painted over it and the pill went light grey. */}
+      <View style={[StyleSheet.absoluteFill, styles.tint]} />
       {TABS.map(({ name, icon }) => (
         <Pressable
           key={name}
@@ -137,11 +139,11 @@ const styles = StyleSheet.create({
     gap: 4,
     padding: 4,
     borderRadius: 999,
-    // A heavy black tint over the blur keeps the icons readable over anything, the bright heatmap included.
-    backgroundColor: '#000000cc',
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
   },
+  // A heavy black tint over the blur keeps the icons readable over anything, the bright heatmap included.
+  tint: { backgroundColor: '#000000cc' },
   tab: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
 });
