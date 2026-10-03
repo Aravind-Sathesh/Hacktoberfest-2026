@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native';
 import { CfError, problemset, userInfo } from '../cf';
 import cp31 from '../cp31.json';
@@ -8,7 +8,7 @@ import {
   type Settings,
   saveSettings,
 } from '../settings';
-import { colors } from '../theme';
+import { colors, isAmoled, setAmoled } from '../theme';
 import { TagPicker } from '../TagPicker';
 import { Button, Card, Field, Mono } from '../ui';
 
@@ -38,6 +38,8 @@ const SOURCES: { value: ProblemSource; label: string; detail: string }[] = [
 const SHEET_LEVELS = Object.keys(cp31)
   .map(Number)
   .sort((a, b) => a - b);
+// The easter egg: this many taps in a row on the same accent toggles the AMOLED theme.
+const AMOLED_TAPS = 7;
 const MIN_PRACTICE = 800;
 const MAX_PRACTICE = 3500;
 
@@ -51,6 +53,19 @@ export function SettingsScreen({ settings, onSaved }: Props) {
   const [goalRating, setGoalRating] = useState(String(settings.goalRating));
   const [goalDate, setGoalDate] = useState(settings.goalDate);
   const [accent, setAccent] = useState(settings.accent);
+  const accentTaps = useRef({ color: '', count: 0 });
+
+  async function tapAccent(color: string) {
+    setAccent(color);
+    const taps = accentTaps.current;
+    taps.count = taps.color === color ? taps.count + 1 : 1;
+    taps.color = color;
+    if (taps.count < AMOLED_TAPS) return;
+    taps.count = 0;
+    // The theme switch reloads the app, so keep the accent he just picked.
+    await saveSettings({ ...settings, accent: color });
+    await setAmoled(!isAmoled);
+  }
   const [showTags, setShowTags] = useState(settings.showTags);
   const [showRatings, setShowRatings] = useState(settings.showRatings);
   const [excludedTags, setExcludedTags] = useState(settings.excludedTags);
@@ -302,7 +317,7 @@ export function SettingsScreen({ settings, onSaved }: Props) {
               accessibilityRole='radio'
               accessibilityLabel={`accent ${color}`}
               accessibilityState={{ selected: color === accent }}
-              onPress={() => setAccent(color)}
+              onPress={() => tapAccent(color)}
               style={[
                 styles.swatch,
                 color === accent && { borderColor: colors.foreground },

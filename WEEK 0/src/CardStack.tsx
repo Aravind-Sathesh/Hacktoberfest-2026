@@ -14,7 +14,7 @@ const PEEK = 14;
 const MAX_PEEKING = 3;
 // Cards further back are narrower and darker, which reads as depth without shadows.
 const INSET = 8;
-const BACK_GREYS = ['#262c36', '#1f242c', '#1a1e25'];
+const BACK_GREYS = colors.stack;
 // A drag shorter than this springs back; past it the card moves on.
 const SWIPE_DISTANCE = 80;
 const NUDGE = 44;

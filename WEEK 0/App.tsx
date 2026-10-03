@@ -1,7 +1,6 @@
-import React, { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
-import { BlurTargetView, BlurView } from 'expo-blur';
-import { BackHandler, Pressable, StatusBar as RNStatusBar, StyleSheet, View } from 'react-native';
+import { Animated, BackHandler, Pressable, StatusBar as RNStatusBar, StyleSheet, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import {
   useFonts,
@@ -15,7 +14,8 @@ import { HistoryScreen } from './src/screens/HistoryScreen';
 import { SettingsScreen } from './src/screens/SettingsScreen';
 import { TodayScreen, forgetToday } from './src/screens/TodayScreen';
 import { type Settings, loadSettings } from './src/settings';
-import { colors } from './src/theme';
+import { setBackgroundColorAsync } from 'expo-system-ui';
+import { arrivedFromThemeSwitch, colors, onThemeFade } from './src/theme';
 import type { IconName } from './src/ui';
 
 type Tab = 'today' | 'history' | 'settings';
@@ -27,20 +27,11 @@ const TABS: { name: Tab; icon: IconName }[] = [
   { name: 'settings', icon: 'settings' },
 ];
 
-type NavPillProps = { active: Tab; accent: string; onSelect: (tab: Tab) => void; behind: RefObject<View | null> };
+type NavPillProps = { active: Tab; accent: string; onSelect: (tab: Tab) => void };
 
-function NavPill({ active, accent, onSelect, behind }: NavPillProps) {
+function NavPill({ active, accent, onSelect }: NavPillProps) {
   return (
-    <BlurView
-      blurTarget={behind}
-      blurMethod="dimezisBlurViewSdk31Plus"
-      tint="dark"
-      intensity={60}
-      style={styles.pill}
-      accessibilityRole="tablist"
-    >
-      {/* Its own layer: as the BlurView's background the blur painted over it and the pill went light grey. */}
-      <View style={[StyleSheet.absoluteFill, styles.tint]} />
+    <View style={styles.pill} accessibilityRole="tablist">
       {TABS.map(({ name, icon }) => (
         <Pressable
           key={name}
@@ -53,15 +44,49 @@ function NavPill({ active, accent, onSelect, behind }: NavPillProps) {
           <Feather name={icon} size={18} color={name === active ? colors.background : colors.muted} />
         </Pressable>
       ))}
-    </BlurView>
+    </View>
   );
 }
 
-export default function App(): React.JSX.Element | null {
+/** A full-screen veil in the theme's background colour: it fades in before a theme switch and out after it. */
+function ThemeFade({ ready }: { ready: boolean }) {
+  const [color, setColor] = useState(colors.background);
+  const veil = useRef(new Animated.Value(arrivedFromThemeSwitch ? 1 : 0)).current;
+
+  useEffect(() => {
+    // Android's window behind the app matches the theme, so nothing shows through at startup or on reload.
+    setBackgroundColorAsync(colors.background);
+    onThemeFade(
+      (to) =>
+        new Promise((done) => {
+          setColor(to);
+          Animated.timing(veil, { toValue: 1, duration: 350, useNativeDriver: true }).start(() => done());
+        }),
+    );
+  }, [veil]);
+
+  // Lift the veil only once the app has drawn, so the new theme fades in rather than popping in under it.
+  useEffect(() => {
+    if (ready && arrivedFromThemeSwitch) Animated.timing(veil, { toValue: 0, duration: 500, useNativeDriver: true }).start();
+  }, [ready, veil]);
+
+  return <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: color, opacity: veil }]} />;
+}
+
+export default function Root() {
+  const [ready, setReady] = useState(false);
+  return (
+    <View style={styles.root}>
+      <App onReady={() => setReady(true)} />
+      <ThemeFade ready={ready} />
+    </View>
+  );
+}
+
+function App({ onReady }: { onReady: () => void }): React.JSX.Element | null {
   const [fontsLoaded] = useFonts({ JetBrainsMono_400Regular, JetBrainsMono_400Regular_Italic, JetBrainsMono_700Bold });
   const [settings, setSettings] = useState<Settings | null>(null);
   const [screen, setScreen] = useState<Screen>({ name: 'today' });
-  const page = useRef<View>(null);
   const goToday = useCallback(() => setScreen({ name: 'today' }), []);
 
   useEffect(() => {
@@ -76,6 +101,11 @@ export default function App(): React.JSX.Element | null {
     });
     return () => sub.remove();
   }, [screen, settings, goToday]);
+
+  const loaded = fontsLoaded && settings !== null;
+  useEffect(() => {
+    if (loaded) onReady();
+  }, [loaded, onReady]);
 
   if (!fontsLoaded || !settings) return null;
 
@@ -105,7 +135,7 @@ export default function App(): React.JSX.Element | null {
   return (
     <View style={[styles.container, styles.tabs]}>
       <StatusBar style="light" />
-      <BlurTargetView ref={page} style={styles.page}>
+      <View style={styles.page}>
         {screen.name === 'settings' ? (
           <SettingsScreen settings={settings} onSaved={onSaved} />
         ) : screen.name === 'history' ? (
@@ -113,13 +143,14 @@ export default function App(): React.JSX.Element | null {
         ) : (
           <TodayScreen settings={settings} onFocus={(problem) => setScreen({ name: 'focus', problem })} />
         )}
-      </BlurTargetView>
-      <NavPill active={screen.name} accent={settings.accent} onSelect={(name) => setScreen({ name })} behind={page} />
+      </View>
+      <NavPill active={screen.name} accent={settings.accent} onSelect={(name) => setScreen({ name })} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  root: { flex: 1, backgroundColor: colors.background },
   container: {
     flex: 1,
     backgroundColor: colors.background,
@@ -139,11 +170,10 @@ const styles = StyleSheet.create({
     gap: 4,
     padding: 4,
     borderRadius: 999,
-    overflow: 'hidden',
+    // Solid, no blur: a steady dark grey reads the same over any page.
+    backgroundColor: colors.pill,
     borderWidth: 1,
     borderColor: colors.border,
   },
-  // A heavy black tint over the blur keeps the icons readable over anything, the bright heatmap included.
-  tint: { backgroundColor: '#000000cc' },
   tab: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
 });
