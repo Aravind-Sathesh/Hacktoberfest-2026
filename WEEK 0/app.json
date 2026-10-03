@@ -10,7 +10,7 @@
     "android": {
       "package": "com.cfbuddy.app",
       "adaptiveIcon": {
-        "backgroundColor": "#1c2a3b",
+        "backgroundColor": "#0e0e0e",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
