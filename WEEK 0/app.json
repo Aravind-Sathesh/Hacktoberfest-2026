@@ -1,0 +1,31 @@
+{
+  "expo": {
+    "name": "codeforces buddy",
+    "slug": "cf-buddy",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "cfbuddy",
+    "userInterfaceStyle": "dark",
+    "android": {
+      "package": "com.cfbuddy.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#1c2a3b",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.VIBRATE"
+      ]
+    },
+    "plugins": [
+      "expo-font",
+      "expo-calendar",
+      "llama.rn"
+    ]
+  }
+}
