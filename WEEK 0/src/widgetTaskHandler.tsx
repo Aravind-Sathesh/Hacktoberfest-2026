@@ -34,7 +34,8 @@ export async function widgetTaskHandler({ widgetAction, widgetInfo, clickAction,
     };
     await saveWidgetData(fresh);
     draw(fresh);
-  } catch {
+  } catch (e) {
+    console.warn('widget refresh failed', e);
     draw(data);
   }
 }
