@@ -4,6 +4,8 @@
 > He's at **1097** today (peak 1237), so that's **+703 in ~90 days**.
 > His words: distraction is what kills his practice. So it's a focus buddy: a Forest-style tree grows while he solves, dies if he leaves the app, and on-device Gemma roasts him like a senior who's seen it all.
 
+> **Where it ended up (Oct 3):** this is the original plan; the README describes the shipped app. After two rounds of Rajeev's feedback: Gemma no longer plans the day or chats. It writes four graded hints from the editorial and the roasts. Problems come from TLE's CP-31 sheet (or by rating) in plain code, fixed for the day. The tree grows over 80 minutes, re-solves don't count, and there's a home screen widget and an AMOLED theme.
+
 ## Challenge fit
 
 **Challenge:** Hacktoberfest Weekend Challenge — _Build for a Friend_ (DEV, HF26 challenge 1 of 5)

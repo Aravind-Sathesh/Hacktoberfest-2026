@@ -58,7 +58,7 @@ A clean, minimal app UI that uses **JetBrains Mono** as its typeface. It should 
 - Dark theme only. Rounded cards (`Card`), filled/outline buttons (`Button`), label-left/value-right stat rows (`Stat`). All of these live in `src/ui.tsx`; reuse them.
 - Icons: Feather from `@expo/vector-icons` only. Keep them minimal.
 - Today shows the day's suggested problems as a **wallet-style card stack** (`src/CardStack.tsx`; picked once a day, a refresh never reshuffles them, each card has a small focus button), then a full-width **start focus** that asks for the problem number, then the stats, the daily tree row and the streak grid.
-- Focus is a **full-screen tree** (`src/Tree.tsx`, drawn with plain views) with a timer and a stack of hint cards (`src/HintStack.tsx`: hold to reveal the next, swipe back through seen ones). No chat. He solves on his PC, so the app never shows the problem.
+- Focus is a **full-screen tree** (`src/Tree.tsx`: eight growth stages over 80 minutes, from `assets/tree-stages/`) with a timer and a stack of hint cards (`src/HintStack.tsx`: hold to reveal the next, swipe back through seen ones). No chat. He solves on his PC, so the app never shows the problem.
 - The accent color, goal, show/hide tags and show/hide ratings come from Settings. Never hardcode Rajeev's handle, rating or goal in the UI.
 - Touch targets must be at least 44dp, and icon-only buttons need an accessibility label.
 

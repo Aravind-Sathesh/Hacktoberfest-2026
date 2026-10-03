@@ -1,6 +1,6 @@
 # PLAN.md
 
-> **Status (Oct 3):** tasks 1–11 implemented. The UI was redesigned per the user: an app-style dashboard with stats and a streak grid, one problem at a time, and a full-screen tree with a Gemma chat instead of an in-app problem view (he solves on his PC). Task 11 adds module caching, pull-to-refresh, dynamic problem queues, and local session sync on return from focus. See AGENTS.md › UI. Remaining: verify on Rajeev's phone, and push a `v*` tag to test the release workflow.
+> **Status (Oct 3, final):** tasks 1–11 are done; everything after task 11 was built directly from Rajeev's feedback, which supersedes several tasks below (no Gemma chat or plan picking, CP-31 queue, 80-minute tree, widget). The README describes the shipped app. Releases v1–v4 are on GitHub.
 
 Use one session per task, done in order. Every session starts by reading [AGENTS.md](AGENTS.md) and [IDEA.md](IDEA.md). Only do the task you were given. Stop when its "done when" checks pass, and don't commit.
 
