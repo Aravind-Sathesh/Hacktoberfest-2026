@@ -1,14 +1,23 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
-import { colors } from './theme';
+import { Image, StyleSheet, View } from 'react-native';
+import deadTree from '../assets/tree-stages/tree-0-dead.png';
+import stage1 from '../assets/tree-stages/stage-1-seed.png';
+import stage2 from '../assets/tree-stages/stage-2-sprout.png';
+import stage3 from '../assets/tree-stages/stage-3-seedling.png';
+import stage4 from '../assets/tree-stages/stage-4-sapling.png';
+import stage5 from '../assets/tree-stages/stage-5-young-tree.png';
+import stage6 from '../assets/tree-stages/stage-6-tree.png';
+import stage7 from '../assets/tree-stages/stage-7-big-tree.png';
+import stage8 from '../assets/tree-stages/stage-8-full-tree.png';
 
 /** Minutes of focus for a fully grown tree. */
-export const FULL_GROWTH_MINUTES = 45;
+export const FULL_GROWTH_MINUTES = 80;
 
-const LEAF = ['#2ea043', '#3fb950', '#56d364'];
-const DEAD_LEAF = ['#30363d', '#3d444d', '#484f58'];
-const TRUNK = '#8b5a2b';
-const DEAD_TRUNK = '#6e7681';
+// Drawn on one shared canvas and ground line, so swapping stages grows the tree in place.
+const STAGES = [stage1, stage2, stage3, stage4, stage5, stage6, stage7, stage8];
+
+/** Which of the eight stages to show: a new one every tenth of the way, the last at full growth. */
+export const stageFor = (growth: number) => Math.min(STAGES.length - 1, Math.floor(Math.max(0, growth) * STAGES.length));
 
 type Props = {
   /** 0 = just planted, 1 = fully grown. */
@@ -17,104 +26,19 @@ type Props = {
   size: number;
 };
 
-/** A tree drawn from plain views: a trunk that rises and a canopy that fills out with growth. */
 export function Tree({ growth, dead, size }: Props) {
-  const g = Math.min(1, Math.max(0, growth));
-  const leaf = dead ? DEAD_LEAF : LEAF;
-  const trunkHeight = size * (0.08 + 0.32 * g);
-  const trunkWidth = size * (0.03 + 0.05 * g);
-  const canopy = size * (0.1 + 0.42 * g);
-  const groundY = size * 0.9;
-  const trunkTop = groundY - trunkHeight;
-  const centerX = size / 2;
-
-  const circle = (diameter: number, dx: number, dy: number, color: string) => ({
-    width: diameter,
-    height: diameter,
-    borderRadius: diameter / 2,
-    left: centerX - diameter / 2 + dx,
-    top: trunkTop - diameter * 0.75 + dy,
-    backgroundColor: color,
-  });
-
+  const stage = stageFor(growth);
   return (
     <View
       style={{ width: size, height: size }}
       accessibilityRole="image"
-      accessibilityLabel={dead ? 'a dead tree' : `a tree, ${Math.round(g * 100)} percent grown`}
+      accessibilityLabel={dead ? 'a dead tree' : `a tree, stage ${stage + 1} of ${STAGES.length}`}
     >
-      <View style={[styles.ground, { width: size * 0.7, left: size * 0.15, top: groundY - 6 }]} />
-      {/* A dead tree leans over its roots; the ground stays level. */}
-      <View
-        style={[
-          StyleSheet.absoluteFill,
-          {
-            transformOrigin: `50% ${groundY}px`,
-            transform: dead ? [{ rotate: '12deg' }] : [],
-          },
-        ]}
-      >
-        <View
-          style={[
-            styles.abs,
-            {
-              width: trunkWidth,
-              height: trunkHeight,
-              left: centerX - trunkWidth / 2,
-              top: trunkTop,
-              borderRadius: trunkWidth / 2,
-              backgroundColor: dead ? DEAD_TRUNK : TRUNK,
-            },
-          ]}
-        />
-        {g < 0.15 ? (
-          // A sprout: two small leaves on the stem.
-          <>
-            <View
-              style={[
-                styles.abs,
-                styles.leaf,
-                {
-                  left: centerX - size * 0.07,
-                  top: trunkTop - size * 0.03,
-                  backgroundColor: leaf[1],
-                  transform: [{ rotate: '-30deg' }],
-                },
-              ]}
-            />
-            <View
-              style={[
-                styles.abs,
-                styles.leaf,
-                {
-                  left: centerX,
-                  top: trunkTop - size * 0.05,
-                  backgroundColor: leaf[2],
-                  transform: [{ rotate: '30deg' }],
-                },
-              ]}
-            />
-          </>
-        ) : (
-          <>
-            <View style={[styles.abs, circle(canopy * 0.75, -canopy * 0.38, canopy * 0.3, leaf[0])]} />
-            <View style={[styles.abs, circle(canopy * 0.75, canopy * 0.38, canopy * 0.3, leaf[0])]} />
-            <View style={[styles.abs, circle(canopy, 0, 0, leaf[1])]} />
-            <View style={[styles.abs, circle(canopy * 0.55, -canopy * 0.12, -canopy * 0.32, leaf[2])]} />
-          </>
-        )}
-      </View>
+      <Image source={dead ? deadTree : STAGES[stage]} style={styles.image} resizeMode="contain" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  abs: { position: 'absolute' },
-  ground: {
-    position: 'absolute',
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: colors.border,
-  },
-  leaf: { width: 28, height: 14, borderRadius: 14 },
+  image: { width: '100%', height: '100%' },
 });

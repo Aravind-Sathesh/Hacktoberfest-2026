@@ -68,7 +68,7 @@ No bundled problem list and no honor system: solved means CF says `OK`.
 ### Daily loop (pull, not push)
 
 1. **Open app → today's plan.** Plain code works out the target (weekday 4 or weekend 6, minus busy blocks, contest-day adjusted) and the candidate problems (`[rating+100, rating+300]`, unsolved). Gemma picks the mix and writes one roast-y line about it.
-2. **Start focus → full-screen tree.** He solves on his PC. The phone sits beside him, awake, while a tree grows over 45 minutes, and he can chat with Gemma when stuck.
+2. **Start focus → full-screen tree.** He solves on his PC. The phone sits beside him, awake, while a tree grows over 80 minutes, and he can chat with Gemma when stuck.
 3. **Leave the app → the tree dies** (an `AppState` change to `background`, after a ~10s grace period for a quick glance at a message). Next time he opens the app, Gemma roasts him about it.
 4. **Solved = CF says `OK`.** During a session, poll `user.status?count=5` every 60s (well inside the rate limit). On `OK`, the tree is fully grown and the next problem is up.
 5. **Stuck → chat.** He tells Gemma where he's stuck, and Gemma replies with a mild nudge of at most two sentences ("what does n ≤ 20 let you afford?"). Replies that name the problem's tags are rejected.
