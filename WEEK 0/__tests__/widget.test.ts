@@ -17,7 +17,7 @@ describe('ringSvg', () => {
 
 describe('gridSvg', () => {
   it('leaves out days that have not happened yet', () => {
-    const svg = gridSvg([[0, 2, -1, -1, -1, -1, -1]], '#38bdf8');
+    const svg = gridSvg([[0, 2, -1, -1, -1, -1, -1]], '#38bdf8', 8, 68);
     expect(svg.match(/<rect/g)).toHaveLength(2);
   });
 });
@@ -26,7 +26,7 @@ describe('widgetToday', () => {
   const targets = { weekday: { problems: 4, minutes: 150 }, weekend: { problems: 6, minutes: 240 } };
   const friday = new Date(2026, 9, 2, 9);
   const saturday = new Date(2026, 9, 3, 9);
-  const data = { day: friday.toDateString(), target: 2, targets, accent: '#38bdf8', solves: [[friday.toDateString(), 1]] as [string, number][] };
+  const data = { day: friday.toDateString(), target: 2, targets, accent: '#38bdf8', solves: [[friday.toDateString(), 1]] as [string, number][], handle: 'h', solvedBefore: [] };
 
   it('uses the saved target and count on the day they were saved', () => {
     expect(widgetToday(data, friday)).toEqual({ done: 1, target: 2 });

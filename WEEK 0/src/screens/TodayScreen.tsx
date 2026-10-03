@@ -11,7 +11,7 @@ import { DayTrees } from '../DayTrees';
 import { updateTodayWidget } from '../widgetTaskHandler';
 import { type Session, forest, loadSessions } from '../sessions';
 import { type Settings, daysUntil } from '../settings';
-import { heatmap, solvesByDay, streaks } from '../stats';
+import { heatmap, solvedBeforeDay, solvesByDay, streaks } from '../stats';
 import { colors } from '../theme';
 import { Button, Card, Chip, Divider, Mono, PulsingLogo, Stat } from '../ui';
 
@@ -24,6 +24,8 @@ type Loaded = {
   plan: Problem[];
   solved: Set<string>;
   byDay: Map<string, number>;
+  /** Problems accepted before today; the widget's tap-refresh counts new solves against these. */
+  solvedBefore: string[];
   sessions: Session[];
 };
 
@@ -114,7 +116,15 @@ async function load(settings: Settings): Promise<Loaded> {
   const today = dailyTarget(now, busy, await upcomingContests(), settings.targets);
   const plan = await todaysPlan(settings, () => buildPlan(settings, now, rating, today, solvedAt, ratingChanges));
 
-  return { rating, today, plan, solved: new Set(solvedAt.keys()), byDay: solvesByDay(submissions), sessions };
+  return {
+    rating,
+    today,
+    plan,
+    solved: new Set(solvedAt.keys()),
+    byDay: solvesByDay(submissions),
+    solvedBefore: solvedBeforeDay(submissions, now),
+    sessions,
+  };
 }
 
 type CardLabelProps = { problem: Problem; place: number; of: number; settings: Settings; contestDay: boolean };
@@ -164,6 +174,8 @@ export function TodayScreen({ settings, onFocus }: Props) {
         targets: settings.targets,
         accent: settings.accent,
         solves: [...loaded.byDay],
+        handle: settings.handle,
+        solvedBefore: loaded.solvedBefore,
       });
     } catch (e) {
       setError(e instanceof CfError ? e.message : 'something broke while planning. pull to retry.');

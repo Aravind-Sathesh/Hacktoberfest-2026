@@ -1,7 +1,7 @@
 jest.mock('expo-file-system', () => ({ File: jest.fn(), Paths: {} }));
 
 import type { Submission } from '../src/cf';
-import { heatmap, solvedHistory, solvesByDay, streaks } from '../src/stats';
+import { heatmap, solvedBeforeDay, solvedHistory, solvesByDay, solvesOnDay, streaks } from '../src/stats';
 
 const friday = new Date(2026, 9, 2, 12);
 const daysAgo = (n: number) => new Date(friday.getTime() - n * 86_400_000);
@@ -49,5 +49,14 @@ describe('solvedHistory', () => {
       ['B', daysAgo(1).getTime(), 1],
       ['A', daysAgo(2).getTime(), 2],
     ]);
+  });
+});
+
+describe('solvesOnDay', () => {
+  it('counts problems first accepted that day, not repeats or older solves', () => {
+    const subs = [ok(daysAgo(1), 'A'), ok(friday, 'A'), ok(friday, 'B'), ok(friday, 'B'), ok(friday, 'C', 'WRONG_ANSWER')];
+    const before = new Set(solvedBeforeDay(subs, friday));
+    expect([...before]).toEqual(['1A']);
+    expect(solvesOnDay(subs, before, friday)).toBe(1);
   });
 });

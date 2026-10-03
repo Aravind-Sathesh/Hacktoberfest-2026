@@ -11,6 +11,10 @@ export type WidgetData = {
   accent: string;
   /** Solves per day, as [Date.toDateString(), count]. */
   solves: [string, number][];
+  /** For tapping the tree, which recounts today's solves from Codeforces. */
+  handle: string;
+  /** Problems solved before `day`, so a re-solve today isn't counted as new. */
+  solvedBefore: string[];
 };
 
 const KEY = 'widget';

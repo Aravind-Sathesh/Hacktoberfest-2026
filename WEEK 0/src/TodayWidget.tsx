@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlexWidget, ImageWidget, OverlapWidget, SvgWidget, TextWidget } from 'react-native-android-widget';
+import goldTree from '../assets/tree-gold.png';
 import tree from '../assets/tree.png';
 import { dailyTarget } from './plan';
 import { heatmap } from './stats';
@@ -13,16 +14,12 @@ const BACKGROUND = '#0d1117';
 const MUTED = '#8b949e';
 const PADDING = 14;
 const COLUMN_GAP = 12;
-const REFRESH_SIZE = 16;
 // The widget keeps this much history; see WIDGET_DAYS.
 const MAX_WEEKS = 30;
 // The share of each grid step that is cell rather than gap.
 const CELL_FILL = 0.78;
 // Degrees left open between ring segments.
 const SEGMENT_GAP = 14;
-
-// Feather's refresh-cw, drawn at 24×24.
-const REFRESH_ICON = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${MUTED}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>`;
 
 const point = (cx: number, r: number, degrees: number) => {
   const rad = ((degrees - 90) * Math.PI) / 180;
@@ -48,8 +45,15 @@ export function ringSvg(target: number, done: number): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}">${arcs.join('')}</svg>`;
 }
 
-/** The streak grid: one column per week, oldest on the left, shaded like the app's. Drawn in 10-unit steps. */
-export function gridSvg(weeks: number[][], accent: string): string {
+/** What the ring shows while a tap-refresh is fetching: widgets can't animate, so it's a still spinner. */
+export const spinnerSvg = (accent: string) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="${EMPTY}" stroke-width="8"/><path d="M 50 20 A 30 30 0 1 1 20 50" fill="none" stroke="${accent}" stroke-width="8" stroke-linecap="round"/></svg>`;
+
+/**
+ * The streak grid: one column per week, oldest on the left, shaded like the app's. Drawn in 10-unit steps
+ * and sized explicitly, because without a width and height the renderer draws it small inside its box.
+ */
+export function gridSvg(weeks: number[][], accent: string, width: number, height: number): string {
   const step = 10;
   const cell = step * CELL_FILL;
   const cells = weeks.flatMap((week, w) =>
@@ -60,7 +64,8 @@ export function gridSvg(weeks: number[][], accent: string): string {
       return [`<rect x="${w * step}" y="${d * step}" width="${cell}" height="${cell}" rx="1.5" fill="${fill}" fill-opacity="${opacity}"/>`];
     }),
   );
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${weeks.length * step - (step - cell)} ${7 * step - (step - cell)}">${cells.join('')}</svg>`;
+  const viewBox = `0 0 ${weeks.length * step - (step - cell)} ${7 * step - (step - cell)}`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${viewBox}">${cells.join('')}</svg>`;
 }
 
 /** Today's count and target. The saved target is only today's; on a new day it falls back to the plain daily target. */
@@ -71,13 +76,13 @@ export function widgetToday(data: WidgetData, now: Date): { done: number; target
   return { done, target };
 }
 
-type Props = { data: WidgetData | null; now: Date; width: number; height: number };
+type Props = { data: WidgetData | null; now: Date; width: number; height: number; loading?: boolean };
 
 /**
- * One tile high: the streak grid as wide as fits, the ring as tall as the widget, and the refresh icon in its
- * own column so it never covers the ring. Sized from the widget's real dimensions in dp.
+ * One tile high: the streak grid as wide as fits and the ring as tall as the widget. Tapping the ring
+ * redraws the widget; tapping anywhere else opens the app. Sized from the widget's real dimensions in dp.
  */
-export function TodayWidget({ data, now, width, height }: Props) {
+export function TodayWidget({ data, now, width, height, loading }: Props) {
   // Tighter on a short widget so the content keeps most of the height.
   const padding = Math.round(Math.min(PADDING, height * 0.16));
   const frame = {
@@ -99,22 +104,27 @@ export function TodayWidget({ data, now, width, height }: Props) {
   const inner = Math.max(24, height - 2 * padding);
   const ring = inner;
   const step = inner / 7;
-  const gridRoom = width - 2 * PADDING - ring - REFRESH_SIZE - 2 * COLUMN_GAP;
+  const gridRoom = width - 2 * PADDING - ring - COLUMN_GAP;
   const weeks = Math.min(MAX_WEEKS, Math.max(4, Math.floor((gridRoom + step * (1 - CELL_FILL)) / step)));
-  const gridWidth = weeks * step - step * (1 - CELL_FILL);
+  const gridWidth = Math.round(weeks * step - step * (1 - CELL_FILL));
   const treeSize = Math.round(ring * 0.5);
   return (
     <FlexWidget clickAction="OPEN_APP" style={{ ...frame, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-      <SvgWidget svg={gridSvg(heatmap(new Map(data.solves), now, weeks), data.accent)} style={{ width: gridWidth, height: inner }} />
-      <FlexWidget style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <OverlapWidget style={{ width: ring, height: ring }}>
-          <SvgWidget svg={ringSvg(target, done)} style={{ width: ring, height: ring }} />
-          <FlexWidget style={{ width: ring, height: ring, alignItems: 'center', justifyContent: 'center' }}>
-            <ImageWidget image={tree} imageWidth={treeSize} imageHeight={treeSize} />
-          </FlexWidget>
-        </OverlapWidget>
-        <SvgWidget svg={REFRESH_ICON} clickAction="REFRESH" style={{ width: REFRESH_SIZE, height: REFRESH_SIZE, marginLeft: COLUMN_GAP }} />
-      </FlexWidget>
+      <SvgWidget
+        svg={gridSvg(heatmap(new Map(data.solves), now, weeks), data.accent, gridWidth, Math.round(inner))}
+        style={{ width: gridWidth, height: Math.round(inner) }}
+      />
+      <OverlapWidget clickAction="REFRESH" style={{ width: ring, height: ring }}>
+        <SvgWidget svg={ringSvg(target, done)} style={{ width: ring, height: ring }} />
+        <FlexWidget style={{ width: ring, height: ring, alignItems: 'center', justifyContent: 'center' }}>
+          {loading ? (
+            <SvgWidget svg={spinnerSvg(data.accent)} style={{ width: treeSize, height: treeSize }} />
+          ) : (
+            // A day past the target earns the gold tree.
+            <ImageWidget image={done > target ? goldTree : tree} imageWidth={treeSize} imageHeight={treeSize} />
+          )}
+        </FlexWidget>
+      </OverlapWidget>
     </FlexWidget>
   );
 }

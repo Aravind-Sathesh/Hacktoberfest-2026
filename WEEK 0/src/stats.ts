@@ -62,3 +62,22 @@ export function heatmap(byDay: Map<string, number>, today: Date, weeks: number):
     }),
   );
 }
+
+const startOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+
+/** Problems he had already got accepted before the given day began. */
+export const solvedBeforeDay = (submissions: Submission[], day: Date): string[] => [
+  ...new Set(
+    submissions.filter((s) => isSolved(s) && s.creationTimeSeconds * 1000 < startOfDay(day)).map((s) => problemId(s.problem)),
+  ),
+];
+
+/** New problems solved on the given day: accepted that day and never before. */
+export function solvesOnDay(submissions: Submission[], solvedBefore: Set<string>, day: Date): number {
+  const start = startOfDay(day);
+  const end = start + DAY_MS;
+  const today = submissions.filter(
+    (s) => isSolved(s) && s.creationTimeSeconds * 1000 >= start && s.creationTimeSeconds * 1000 < end,
+  );
+  return new Set(today.map((s) => problemId(s.problem)).filter((id) => !solvedBefore.has(id))).size;
+}
