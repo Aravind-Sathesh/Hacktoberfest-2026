@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import goldTree from '../assets/tree-gold.png';
 import tree from '../assets/tree.png';
 import { colors } from './theme';
 import { Mono } from './ui';
@@ -28,7 +29,7 @@ export function DayTrees({ target, done }: { target: number; done: number }) {
       >
         {Array.from({ length: target + extra }, (_, i) => (
           <View key={i} style={[styles.circle, { borderColor: color(i) }]}>
-            <Image source={tree} style={[styles.tree, i >= done && styles.unsolved]} />
+            <Image source={i >= target && i < done ? goldTree : tree} style={[styles.tree, i >= done && styles.unsolved]} />
           </View>
         ))}
       </ScrollView>
