@@ -1,7 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useEffect, useRef } from 'react';
 import { Animated, Modal, Pressable, StyleSheet, Text, TextInput, View, type TextStyle, type ViewStyle } from 'react-native';
-import logo from '../assets/logo.png';
 import { colors, fonts, radius } from './theme';
 
 type MonoProps = {
@@ -72,6 +71,41 @@ export const Card = ({ children, style }: { children: React.ReactNode; style?: V
   <View style={[styles.card, style]}>{children}</View>
 );
 
+type WipeProps = { value: string | number; children: React.ReactNode; cover?: string };
+
+/**
+ * Wipes its text in when `value` changes (never on the first draw): a cover in the colour behind it shrinks
+ * away left to right. Only what changed moves, so a refresh shows exactly which numbers are new.
+ */
+export function WipeOnChange({ value, children, cover = colors.surface }: WipeProps) {
+  const first = useRef(true);
+  const reveal = useRef(new Animated.Value(1)).current;
+  useEffect(() => {
+    if (first.current) {
+      first.current = false;
+      return;
+    }
+    reveal.setValue(0);
+    Animated.timing(reveal, { toValue: 1, duration: 450, useNativeDriver: true }).start();
+  }, [value, reveal]);
+  return (
+    <View>
+      {children}
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          StyleSheet.absoluteFill,
+          {
+            backgroundColor: cover,
+            transformOrigin: 'right',
+            transform: [{ scaleX: reveal.interpolate({ inputRange: [0, 1], outputRange: [1, 0] }) }],
+          },
+        ]}
+      />
+    </View>
+  );
+}
+
 type StatProps = { label: string; value: string | number; icon: IconName; color?: string };
 
 export const Stat = ({ label, value, icon, color }: StatProps) => (
@@ -80,9 +114,11 @@ export const Stat = ({ label, value, icon, color }: StatProps) => (
       <Feather name={icon} size={15} color={colors.muted} />
       <Mono color={colors.muted}>{label}</Mono>
     </View>
-    <Mono bold color={color}>
-      {value}
-    </Mono>
+    <WipeOnChange value={value}>
+      <Mono bold color={color}>
+        {value}
+      </Mono>
+    </WipeOnChange>
   </View>
 );
 
@@ -116,24 +152,30 @@ export function Field({ label, value, onChangeText, numeric }: FieldProps) {
 export const Divider = () => <View style={styles.divider} />;
 
 /** The app mark, grey and breathing, while something loads. */
-export function PulsingLogo() {
-  const opacity = useRef(new Animated.Value(0.2)).current;
+/** Gently pulses placeholder content while the real thing loads. */
+export function SkeletonPulse({ children, label }: { children: React.ReactNode; label: string }) {
+  const opacity = useRef(new Animated.Value(0.5)).current;
   useEffect(() => {
     const pulse = Animated.loop(
       Animated.sequence([
-        Animated.timing(opacity, { toValue: 0.6, duration: 900, useNativeDriver: true }),
-        Animated.timing(opacity, { toValue: 0.2, duration: 900, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 1, duration: 700, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.5, duration: 700, useNativeDriver: true }),
       ]),
     );
     pulse.start();
     return () => pulse.stop();
   }, [opacity]);
   return (
-    <View style={styles.loading} accessibilityLabel="loading">
-      <Animated.Image source={logo} style={[styles.logo, { opacity }]} />
-    </View>
+    <Animated.View style={[styles.skeleton, { opacity }]} accessibilityLabel={label}>
+      {children}
+    </Animated.View>
   );
 }
+
+/** A grey placeholder bar standing in for text or a control. */
+export const Bone = ({ width, height = 12, style }: { width: `${number}%`; height?: number; style?: ViewStyle }) => (
+  <View style={[styles.bone, { width, height }, style]} />
+);
 
 type DialogProps = {
   visible: boolean;
@@ -191,8 +233,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border, marginVertical: 4 },
-  loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  logo: { width: 160, height: 160, tintColor: colors.muted },
+  skeleton: { gap: 16 },
+  bone: { backgroundColor: colors.border, borderRadius: 6, marginVertical: 4 },
   scrim: { flex: 1, backgroundColor: '#000000b3', justifyContent: 'center', padding: 24 },
   dialog: { gap: 8, padding: 20, borderWidth: 1, borderColor: colors.border },
   dialogButtons: { flexDirection: 'row', gap: 10, marginTop: 12 },

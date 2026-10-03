@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { todaysBusyBlocks } from '../calendar';
 import { CfError, type Problem, type RatingChange, isSolved, problemId, problemset, upcomingContests, userRating, userStatus } from '../cf';
@@ -12,8 +12,8 @@ import { updateTodayWidget } from '../widgetTaskHandler';
 import { type Session, forest, loadSessions } from '../sessions';
 import { type Settings, daysUntil } from '../settings';
 import { heatmap, solvedBeforeDay, solvesByDay, streaks } from '../stats';
-import { colors } from '../theme';
-import { Button, Card, Chip, Divider, Mono, PulsingLogo, Stat } from '../ui';
+import { colors, radius } from '../theme';
+import { Bone, Button, Card, Chip, Divider, Mono, SkeletonPulse, Stat } from '../ui';
 
 /** No problem means he picks it on the focus screen. */
 type Props = { settings: Settings; onFocus: (problem?: Problem) => void };
@@ -54,6 +54,27 @@ export const forgetToday = () => {
   stale = true;
 };
 
+// The last loaded Today, on the phone: shown the moment the app opens while the fresh one loads.
+const SAVED_KEY = 'today-saved';
+type Saved = Omit<Loaded, 'solved' | 'byDay'> & { handle: string; solved: string[]; byDay: [string, number][] };
+
+const saveToday = (handle: string, loaded: Loaded) =>
+  AsyncStorage.setItem(
+    SAVED_KEY,
+    JSON.stringify({ ...loaded, handle, solved: [...loaded.solved], byDay: [...loaded.byDay] } satisfies Saved),
+  );
+
+async function savedToday(handle: string): Promise<Loaded | null> {
+  try {
+    const raw = await AsyncStorage.getItem(SAVED_KEY);
+    const saved = raw ? (JSON.parse(raw) as Saved) : null;
+    if (!saved || saved.handle !== handle) return null;
+    return { ...saved, solved: new Set(saved.solved), byDay: new Map(saved.byDay) };
+  } catch {
+    return null;
+  }
+}
+
 const hoursAndMinutes = (minutes: number) => `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
 
 async function buildPlan(
@@ -91,6 +112,8 @@ async function todaysPlan(settings: Settings, pick: () => Promise<Problem[]>): P
     source: settings.problemSource,
     practiceRating: settings.practiceRating,
     perTarget: SUGGESTIONS_PER_TARGET,
+    // Bumped when the picking rules change, so a day's list built under the old rules is rebuilt once.
+    rules: 2,
   });
   const stored = await AsyncStorage.getItem(PLAN_KEY);
   const plan = stored ? (JSON.parse(stored) as DayPlan) : null;
@@ -106,9 +129,10 @@ async function load(settings: Settings): Promise<Loaded> {
   const ratingChanges = await userRating(settings.handle);
   const rating = ratingChanges.at(-1)?.newRating ?? UNRATED_START;
   const submissions = await userStatus(settings.handle);
-  // When he last got each problem accepted; the sheet continues from his most recent sheet solve.
+  // When he first got each problem accepted. The sheet continues from his most recent new sheet solve, so
+  // re-solving an old problem doesn't drag him back down the sheet.
   const solvedAt = new Map<string, number>();
-  const markSolved = (id: string, at: number) => solvedAt.set(id, Math.max(solvedAt.get(id) ?? 0, at));
+  const markSolved = (id: string, at: number) => solvedAt.set(id, Math.min(solvedAt.get(id) ?? Infinity, at));
   for (const s of submissions.filter(isSolved)) markSolved(problemId(s.problem), s.creationTimeSeconds * 1000);
   const sessions = await loadSessions();
   for (const s of sessions) if (s.outcome === 'grown') markSolved(s.problemId, s.at);
@@ -157,6 +181,8 @@ export function TodayScreen({ settings, onFocus }: Props) {
   const [download, setDownload] = useState<number | null>(null);
   const [modelReady, setModelReady] = useState(isModelDownloaded());
   const accent = settings.accent;
+  const showing = useRef(data !== null);
+  showing.current = data !== null;
 
   const refresh = useCallback(async () => {
     setLoading(true);
@@ -168,6 +194,7 @@ export function TodayScreen({ settings, onFocus }: Props) {
       cachedDay = new Date().toDateString();
       stale = false;
       setData(loaded);
+      saveToday(settings.handle, loaded);
       updateTodayWidget({
         day: new Date().toDateString(),
         target: loaded.today.problems,
@@ -186,6 +213,8 @@ export function TodayScreen({ settings, onFocus }: Props) {
 
   useEffect(() => {
     if (!cacheFor(settings) || stale) {
+      // Show the last saved Today at once (local, a few ms), then replace it when Codeforces answers.
+      if (!showing.current) savedToday(settings.handle).then((saved) => saved && setData((prev) => prev ?? saved));
       refresh();
     } else {
       // A lost tree changes only local stats; no need to ask Codeforces.
@@ -227,7 +256,7 @@ export function TodayScreen({ settings, onFocus }: Props) {
       refreshControl={<RefreshControl refreshing={loading && !!data} onRefresh={refresh} colors={[accent]} />}
     >
       {error && <Mono color={colors.danger}>{error}</Mono>}
-      {loading && !data && <PulsingLogo />}
+      {loading && !data && <Skeleton />}
 
       {data && (
         <>
@@ -323,7 +352,29 @@ export function TodayScreen({ settings, onFocus }: Props) {
   );
 }
 
+/** Placeholder cards in the page's own shapes, for the very first load when nothing is saved yet. */
+const Skeleton = () => (
+  <SkeletonPulse label="loading today">
+    <Card>
+      <Bone width="30%" />
+      <Bone width="70%" height={20} />
+      <Bone width="20%" height={22} />
+    </Card>
+    <Bone width="100%" height={48} style={styles.boneButton} />
+    <Card>
+      {Array.from({ length: 6 }, (_, i) => (
+        <View key={i} style={styles.boneRow}>
+          <Bone width="35%" />
+          <Bone width="15%" />
+        </View>
+      ))}
+    </Card>
+  </SkeletonPulse>
+);
+
 const styles = StyleSheet.create({
+  boneButton: { borderRadius: radius },
+  boneRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
   content: { gap: 16, paddingBottom: 96 },
   fill: { flexGrow: 1 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 8 },

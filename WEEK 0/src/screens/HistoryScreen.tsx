@@ -4,7 +4,7 @@ import { CfError, problemId, userStatus } from '../cf';
 import type { Settings } from '../settings';
 import { type Solve, solvedHistory } from '../stats';
 import { colors } from '../theme';
-import { Card, Mono, PulsingLogo } from '../ui';
+import { Bone, Card, Mono, SkeletonPulse } from '../ui';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 const ddmmyyyy = (at: number) => {
@@ -50,7 +50,25 @@ export function HistoryScreen({ settings }: { settings: Settings }) {
       refreshControl={<RefreshControl refreshing={loading && !!solves} onRefresh={refresh} colors={[accent]} />}
     >
       {error && <Mono color={colors.danger}>{error}</Mono>}
-      {loading && !solves && <PulsingLogo />}
+      {loading && !solves && (
+        <SkeletonPulse label="loading solved problems">
+          <Bone width="25%" />
+          <Card>
+            {Array.from({ length: 8 }, (_, i) => (
+              <View key={i} style={styles.row}>
+                <View style={styles.name}>
+                  <Bone width="70%" />
+                  <Bone width="25%" height={10} />
+                </View>
+                <View style={[styles.meta, styles.boneMeta]}>
+                  <Bone width="100%" height={10} />
+                  <Bone width="70%" height={10} />
+                </View>
+              </View>
+            ))}
+          </Card>
+        </SkeletonPulse>
+      )}
 
       {solves && (
         <>
@@ -87,4 +105,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 6 },
   name: { flex: 1 },
   meta: { alignItems: 'flex-end' },
+  // The date column's width, so its placeholder bars have something to fill.
+  boneMeta: { width: 84 },
 });

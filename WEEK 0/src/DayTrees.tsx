@@ -3,7 +3,7 @@ import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import goldTree from '../assets/tree-gold.png';
 import tree from '../assets/tree.png';
 import { colors } from './theme';
-import { Mono } from './ui';
+import { Mono, WipeOnChange } from './ui';
 
 const GREEN = '#3fb950';
 // Solves past the day's target.
@@ -17,9 +17,11 @@ export function DayTrees({ target, done }: { target: number; done: number }) {
 
   return (
     <View style={styles.container}>
-      <Mono color={colors.muted} size={12}>
-        TODAY · {done} OF {target}
-      </Mono>
+      <WipeOnChange value={`${done}/${target}`}>
+        <Mono color={colors.muted} size={12}>
+          TODAY · {done} OF {target}
+        </Mono>
+      </WipeOnChange>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
