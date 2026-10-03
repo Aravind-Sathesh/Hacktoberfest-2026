@@ -15,7 +15,7 @@ const MAX_PEEKING = 3;
 // Cards further back are narrower and darker, which reads as depth without shadows.
 const INSET = 8;
 const BACK_GREYS = ['#262c36', '#1f242c', '#1a1e25'];
-// A drag shorter than this springs back; past it the card flies off.
+// A drag shorter than this springs back; past it the card moves on.
 const SWIPE_DISTANCE = 80;
 const NUDGE = 44;
 // Once per app launch, not every time Today comes back into view.
@@ -23,7 +23,8 @@ let nudged = false;
 
 /**
  * Wallet-style stack: the front card in full, the ones behind as edges above it.
- * Swipe the front card left for the next one and right for the previous; tapping the edges also goes next.
+ * Swipe left and the front card flies off to show the next one; swipe right and the previous card slides
+ * back in from the left over it. Tapping the edges also goes next.
  */
 export function CardStack<T>({ items, keyOf, renderCard, nextLabel }: Props<T>) {
   // The front card sizes itself to its content; the cards behind and the stack follow it.
@@ -32,8 +33,14 @@ export function CardStack<T>({ items, keyOf, renderCard, nextLabel }: Props<T>) 
   const count = items.length;
   const peeking = Math.min(count - 1, MAX_PEEKING);
 
+  // x moves the front card (swiping left); prevX moves the previous card in from the left (swiping right).
   const x = useRef(new Animated.Value(0)).current;
-  const width = useRef(0);
+  const prevX = useRef(new Animated.Value(-1000)).current;
+  const [width, setWidth] = useState(0);
+  const widthRef = useRef(0);
+  widthRef.current = width;
+  // Until the stack is measured, park it far away so it can't flash on screen.
+  const offscreen = () => (widthRef.current ? -widthRef.current - 24 : -10_000);
 
   const step = (dir: 1 | -1) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -43,37 +50,52 @@ export function CardStack<T>({ items, keyOf, renderCard, nextLabel }: Props<T>) 
   const stepRef = useRef(step);
   stepRef.current = step;
 
-  // Before paint, so the card that flew off is never drawn back in place.
-  useLayoutEffect(() => x.setValue(0), [front, x]);
+  // Before paint, so a card that just moved is never drawn back in its old place.
+  useLayoutEffect(() => {
+    x.setValue(0);
+    prevX.setValue(offscreen());
+  }, [front, width, x, prevX]);
 
   useEffect(() => {
     if (nudged || count < 2) return;
     nudged = true;
-    // A peek left (next) then right (previous), so he learns the card slides without reading a hint.
-    const to = (toValue: number, duration: number) => Animated.timing(x, { toValue, duration, useNativeDriver: false });
+    // The front card peeks left (next), then the previous card peeks in from the left, so he learns both
+    // directions without reading a hint.
+    const to = (value: Animated.Value, toValue: number, duration: number) =>
+      Animated.timing(value, { toValue, duration, useNativeDriver: false });
     Animated.sequence([
       Animated.delay(700),
-      to(-NUDGE, 260),
-      to(0, 220),
+      to(x, -NUDGE, 260),
+      to(x, 0, 220),
       Animated.delay(150),
-      to(NUDGE, 260),
-      to(0, 220),
+      to(prevX, offscreen() + NUDGE * 1.5, 260),
+      to(prevX, offscreen(), 220),
     ]).start();
-  }, [count, x]);
+  }, [count, x, prevX]);
 
-  const springBack = () => Animated.spring(x, { toValue: 0, useNativeDriver: false }).start();
+  const springBack = () =>
+    Animated.parallel([
+      Animated.spring(x, { toValue: 0, useNativeDriver: false }),
+      Animated.spring(prevX, { toValue: offscreen(), useNativeDriver: false }),
+    ]).start();
   const pan = useRef(
     PanResponder.create({
       // Only clearly sideways drags; vertical ones stay with the page's scroll, and taps reach the button.
       onMoveShouldSetPanResponder: (_, g) => Math.abs(g.dx) > 12 && Math.abs(g.dx) > Math.abs(g.dy) * 1.5,
-      onPanResponderMove: Animated.event([null, { dx: x }], { useNativeDriver: false }),
+      onPanResponderMove: (_, g) => {
+        // Left drags the front card away; right pulls the previous card in and leaves the front one put.
+        x.setValue(Math.min(0, g.dx));
+        prevX.setValue(Math.min(0, offscreen() + Math.max(0, g.dx)));
+      },
       onPanResponderTerminationRequest: () => false,
       onPanResponderRelease: (_, g) => {
         if (Math.abs(g.dx) < SWIPE_DISTANCE) return springBack();
-        const dir = g.dx < 0 ? 1 : -1;
-        Animated.timing(x, { toValue: -dir * width.current, duration: 160, useNativeDriver: false }).start(() =>
-          stepRef.current(dir),
-        );
+        const next = g.dx < 0;
+        Animated.timing(next ? x : prevX, {
+          toValue: next ? -widthRef.current : 0,
+          duration: 160,
+          useNativeDriver: false,
+        }).start(() => stepRef.current(next ? 1 : -1));
       },
       onPanResponderTerminate: springBack,
     }),
@@ -84,7 +106,7 @@ export function CardStack<T>({ items, keyOf, renderCard, nextLabel }: Props<T>) 
   const at = (offset: number) => items[(front + offset) % count];
 
   return (
-    <View style={{ height: cardHeight + peeking * PEEK }} onLayout={(e) => (width.current = e.nativeEvent.layout.width)}>
+    <View style={{ height: cardHeight + peeking * PEEK }} onLayout={(e) => setWidth(e.nativeEvent.layout.width)}>
       {behind.map((depth) => (
         <View
           key={keyOf(at(depth))}
@@ -125,6 +147,16 @@ export function CardStack<T>({ items, keyOf, renderCard, nextLabel }: Props<T>) 
       >
         {renderCard(at(0))}
       </Animated.View>
+      {count > 1 && (
+        // The previous card, waiting off the left edge until a right swipe pulls it in over the front one.
+        <Animated.View
+          key={`previous-${keyOf(at(count - 1))}`}
+          pointerEvents="none"
+          style={[styles.card, styles.front, { top: peeking * PEEK, transform: [{ translateX: prevX }] }]}
+        >
+          {renderCard(at(count - 1))}
+        </Animated.View>
+      )}
       {peeking > 0 && (
         <Pressable
           accessibilityRole="button"

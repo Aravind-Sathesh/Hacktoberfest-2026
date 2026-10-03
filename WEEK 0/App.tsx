@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
     gap: 4,
     padding: 4,
     borderRadius: 999,
-    // Translucent over the blur, so the page shows through softened.
-    backgroundColor: `${colors.surface}80`,
+    // A heavy black tint over the blur keeps the icons readable over anything, the bright heatmap included.
+    backgroundColor: '#000000cc',
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: colors.border,
