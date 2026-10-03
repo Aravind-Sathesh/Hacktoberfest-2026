@@ -25,7 +25,29 @@
     "plugins": [
       "expo-font",
       "expo-calendar",
-      "llama.rn"
+      "llama.rn",
+      [
+        "react-native-android-widget",
+        {
+          "fonts": [
+            "./node_modules/@expo-google-fonts/jetbrains-mono/400Regular/JetBrainsMono_400Regular.ttf",
+            "./node_modules/@expo-google-fonts/jetbrains-mono/700Bold/JetBrainsMono_700Bold.ttf"
+          ],
+          "widgets": [
+            {
+              "name": "Today",
+              "label": "codeforces buddy",
+              "description": "today's trees and your streak, one row",
+              "minWidth": "250dp",
+              "minHeight": "40dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 1,
+              "resizeMode": "none",
+              "updatePeriodMillis": 3600000
+            }
+          ]
+        }
+      ]
     ]
   }
 }

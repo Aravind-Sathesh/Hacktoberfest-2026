@@ -28,6 +28,7 @@
     "llama.rn": "^0.13.0-rc.6",
     "react": "19.2.3",
     "react-native": "0.86.3",
+    "react-native-android-widget": "^0.22.1",
     "react-native-webview": "13.16.1"
   },
   "devDependencies": {
