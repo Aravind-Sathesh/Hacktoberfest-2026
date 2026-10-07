@@ -77,6 +77,7 @@ export default function Root() {
   const [ready, setReady] = useState(false);
   return (
     <View style={styles.root}>
+      <View style={styles.topBar} />
       <App onReady={() => setReady(true)} />
       <ThemeFade ready={ready} />
     </View>
@@ -151,10 +152,12 @@ function App({ onReady }: { onReady: () => void }): React.JSX.Element | null {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
+  // Pitch black band over the camera cutout and status bar, in every theme, with a little breathing room below.
+  topBar: { height: (RNStatusBar.currentHeight ?? 24) + 6, backgroundColor: '#000000' },
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingTop: (RNStatusBar.currentHeight ?? 24) + 16,
+    paddingTop: 16,
     paddingHorizontal: 20,
     // Clears the gesture bar under edge-to-edge.
     paddingBottom: 24,
