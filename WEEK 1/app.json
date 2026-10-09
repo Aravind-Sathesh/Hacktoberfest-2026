@@ -1,0 +1,78 @@
+{
+  "expo": {
+    "name": "TrailKit",
+    "slug": "trailkit",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "trailkit",
+    "userInterfaceStyle": "automatic",
+    "android": {
+      "package": "com.trailkit.app",
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED"
+      ],
+      "adaptiveIcon": {
+        "backgroundColor": "#F4F4F1",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      "expo-font",
+      "llama.rn",
+      "onnxruntime-react-native",
+      "./plugins/withOnnxruntime.js",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "TrailKit records your route while you hike and pins what you find on it. Your route stays on your phone unless you post the trek.",
+          "isAndroidForegroundServiceEnabled": true,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isIosBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "TrailKit uses the camera to identify plants, insects and snakes, and to save views on your trek. Photos stay on your phone.",
+          "photosPermission": "Choose a photo to identify. It stays on your phone."
+        }
+      ],
+      "./plugins/withSpacedProjectPath.js",
+      "@maplibre/maplibre-react-native",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#7AA7FF"
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "backgroundColor": "#0E1013"
+        }
+      ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.aravind.trailkit",
+      "supportsTablet": false,
+      "infoPlist": {
+        "UIFileSharingEnabled": true,
+        "LSSupportsOpeningDocumentsInPlace": true
+      }
+    },
+    "description": "Offline trail companion: record your treks, check whether a plant, insect or snake is safe with on-device AI, and share routes with other hikers.",
+    "icon": "./assets/icon.png",
+    "backgroundColor": "#0E1013"
+  }
+}
