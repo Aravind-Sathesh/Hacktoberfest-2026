@@ -36,11 +36,11 @@ Built for the DEV Hacktoberfest week 1 challenge, theme "Touch Grass": open-sour
 
 ## App structure
 
-Three tabs: Start and Settings work fully offline; Community is the only screen that needs a connection.
+Three tabs: Explore and Settings work fully offline; Community is the only screen that needs a connection.
 
 | Tab       | What's on it                                                                                                                          | Offline               |
 | --------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| Start     | Home. Start or resume a hike, camera for field ID, live map and track, journal, gear check, past trips                                | Yes                   |
+| Explore   | Home. Start or resume a hike, camera for field ID, live map and track, journal, gear check, past trips                                | Yes                   |
 | Community | Feed of shared trail recaps: route map, elevation profile, snaps along the route, species found, stats. Post your own recap once home | No, syncs when online |
 | Settings  | Model downloads and storage, offline map regions, units, safety disclaimer, community profile                                         | Yes                   |
 
@@ -61,13 +61,13 @@ Five features, P0 is the hackathon demo; P1 ships if time allows.
 
 1. User captures a photo in-app (GPS and time saved with it).
 2. BioCLIP classifies the species and returns top-5 with scores.
-3. The VLM receives the top candidates plus the image and writes a short card: what it is, danger level, lookalikes, action.
+3. Gemma (text only) receives BioCLIP's top candidates and writes a short card: what it is, lookalikes, action. Danger level comes from the label data, never from Gemma. (The spike showed Gemma vision takes 284 s on CPU and misidentified the test plant.)
 4. The sighting is saved to the journal and pinned on the track.
 
 **Gear check flow**
 
 1. User photographs gear before the trip.
-2. VLM returns a JSON list of detected items; user confirms or edits.
+2. VLM returns a JSON list of detected items; user confirms or edits. At risk: Gemma vision took 284 s on the emulator CPU (see `SPIKE.md`).
 3. Inventory is diffed against a checklist (water, fire, light, first aid, navigation, shelter, food, tools, sun protection, insulation).
 4. During the trip, user marks items used or lost.
 
@@ -86,7 +86,7 @@ The app never tells anyone a wild plant or fungus is safe to eat. Misidentificat
 
 &#91;embedded content: Trailkit architecture · all on-device\]
 
-BioCLIP picks the species; Gemma 3n only explains what BioCLIP returned; the safety layer filters every card before it reaches the screen.
+BioCLIP picks the species; Gemma 4 E2B only explains what BioCLIP returned; the safety layer filters every card before it reaches the screen.
 
 Only the Community tab goes online: after the hike, the app talks directly to Supabase (Postgres + PostGIS for recaps, Storage for snaps, anonymous auth). No custom server.
 
@@ -94,28 +94,28 @@ Only the Community tab goes online: after the hike, the app talks directly to Su
 | ----------------- | ------------------------------------------------------------------------------------ |
 | App               | React Native (Expo dev build), Android first                                         |
 | Species ID        | BioCLIP via onnxruntime-react-native                                                 |
-| Language + vision | Gemma 3n via llama.rn (GGUF, quantized)                                              |
-| Location          | expo-location background task, MapLibre RN with offline OSM tiles                    |
-| Storage           | expo-sqlite                                                                          |
+| Language + vision | Gemma 4 E2B via llama.rn (QAT GGUF + mmproj vision projector)                        |
+| Location          | expo-location in a foreground service ("while using" permission only); route drawn as an SVG outline with react-native-svg. Map tiles and drawing your own route (MapLibre + OpenFreeMap, downloadable per route) are "coming soon" |
+| Storage           | JSON files via expo-file-system: `trailkit.json` (profile + treks, atomic writes) and `active_track.jsonl` (GPS points appended by the task). SQLite deferred: one trek is a few hundred points |
 | CI                | GitHub Actions builds the APK                                                        |
 | Community         | Supabase: Postgres + PostGIS, Storage for photos, anonymous auth with a display name |
 
 ## Partner technology
 
-Gemma is the core; two cheap add-ons ride along; the rest are skipped because the stack doesn't need them; the Community feed runs on open-source Supabase instead.
+Gemma is the core; one cheap add-on rides along; the rest are skipped because the stack doesn't need them; the Community feed runs on open-source Supabase instead.
 
 | Partner                                                                                  | How Trailkit uses it                                                                                                                                                                                  | Effort          | Decision                                                   |
 | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------------------------------------------- |
-| Gemma ($200)                                                                             | Gemma 3n on-device via llama.rn writes every ID card and parses gear photos                                                                                                                           | Already planned | Core                                                       |
+| Gemma ($200)                                                                             | Gemma 4 E2B on-device via llama.rn writes every ID card and parses gear photos                                                                                                                        | Already planned | Core                                                       |
 | Entire ($100)                                                                            | Entire CLI captures every coding-agent session as checkpoints linked to commits; link them in the write-up to explain why code exists. Separate from DevRelay, which embeds a session in the DEV post | Low             | Yes                                                        |
-| GitHub Copilot ($100)                                                                    | Copilot builds each planned task in its own session; GitHub Actions builds the APK on every release tag                                                                                               | Low             | Yes                                                        |
+| GitHub Copilot ($100)                                                                    | Dropped: Copilot stopped working for us, so tasks are built with Antigravity (agy). GitHub Actions still builds the APK                                                                                | —               | No                                                         |
 | Tinker ($200)                                                                            | Fine-tune the card-writing model on curated species and safety data; show accuracy vs. baseline                                                                                                       | High            | Stretch, if Tinker supports a small enough model to export |
 | Sentry Agent Tracing ($100)                                                              | Trace on-device model latency, uploaded when back online                                                                                                                                              | Medium          | Maybe                                                      |
 | Render, DigitalOcean, MongoDB, Temporal, SerpApi, Tiger Data, Mastra, Backboard, Arduino | Need a server, live internet or extra hardware                                                                                                                                                        | —               | Skip                                                       |
 
 ## Data model
 
-All data lives in on-device SQLite. Four tables, one trip owns everything.
+All data lives on the device. The shapes below are the plan; as built (Oct 8), a trek keeps a thinned `route` (≤300 points) plus distance and climb, sightings carry lat/lng, and gear lives on the trek. See `src/treks.ts`.
 
 | Table       | Key fields                                                                                                                      |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -139,20 +139,20 @@ The demo succeeds if one real hike runs end to end in airplane mode.
 
 ## Build workflow
 
-Claude Code plans, GitHub Copilot builds, and every session is logged.
+Claude Code plans, Antigravity (agy) builds, and every session is logged.
 
-1. Claude Code turns this PRD into tasks (GitHub issues), one vertical slice each.
-2. Each task gets its own Copilot conversation and PR.
+1. Claude Code turns this PRD into tasks in `TASK.md`, one vertical slice each.
+2. Each task gets its own agy conversation. Claude Code reviews it in `REVIEW.md` before the next task.
 3. Entire captures every session as checkpoints linked to the commits.
 4. The planning session and one or two hard tasks are embedded in the DEV post via DevRelay.
 
 ## Milestones
 
-Six phases in order; the submission deadline is still to confirm on the challenge page.
+Six phases in order; submissions are due Oct 11, 2026, 11:59 PM PDT.
 
-1. **Spike:** BioCLIP running via ONNX on a phone, Gemma 3n running via llama.rn, both offline. Go/no-go on latency.
+1. **Spike:** BioCLIP running via ONNX on a phone, Gemma 4 E2B (text + vision) running via llama.rn, both offline. Go/no-go on latency.
 2. **Field ID:** camera → BioCLIP → Gemma card, with safety rules enforced.
-3. **Trail + journal:** background GPS, offline map, sightings pinned on the track.
+3. **Trail + journal:** background GPS, route outline, sightings pinned on the track. Built Oct 8 (task 07); map tiles deferred.
 4. **Gear check (P1):** photo → inventory → checklist diff.
 5. **Touch grass:** take it on a real hike and capture the track, snaps and screenshots.
 6. **Last 3 days, recap + share (P2):** recap page from that hike, then write the post with the submission template.
@@ -168,6 +168,7 @@ Six phases in order; the submission deadline is still to confirm on the challeng
 | GPS altitude noise inflates elevation gain                             | Smooth with a moving average; ignore changes under 3 m                      |
 
 - [ ] Android only, or Android + iOS?
-- [ ] Gemma 3n E2B or E4B? Decide on latency after the spike.
+- [x] Gemma 3n → Gemma 4: no Gemma 3n GGUF ships an mmproj, so llama.rn has no Gemma 3n vision (checked Oct 7).
+- [x] Gemma 4 E2B or E4B? E2B: its warm card already takes 2.35 s of the 5 s budget on the emulator (Oct 7 spike).
 - [ ] Offline map tiles: bundle a region or download per trip?
-- [ ] Confirm the challenge submission deadline.
+- [x] Confirm the challenge submission deadline: Oct 11, 2026, 11:59 PM PDT.

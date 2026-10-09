@@ -41,11 +41,10 @@ Theme: get people off the screen and outside (hiking, gardening, birding, run cl
 
 | Category                   | Prize | Our use                                                        |
 | -------------------------- | ----- | -------------------------------------------------------------- |
-| Best Use of Gemma          | $200  | Gemma 3n on device via `llama.rn`                              |
+| Best Use of Gemma          | $200  | Gemma 4 E2B on device via `llama.rn` (text + vision)          |
 | Best Use of Entire         | $100  | Agent sessions captured as checkpoints, shared in the write-up |
-| Best Use of GitHub Copilot | $100  | One Copilot session per task; Actions builds the APK           |
 
-Other categories (Render, TabPFN, Tinker, Arduino, DigitalOcean, Backboard, ElevenLabs, Mastra, MongoDB Atlas, Sentry, SerpApi, Temporal, Tiger Data) are out of scope.
+Other categories (GitHub Copilot, dropped when we moved the build to Antigravity; Render, TabPFN, Tinker, Arduino, DigitalOcean, Backboard, ElevenLabs, Mastra, MongoDB Atlas, Sentry, SerpApi, Temporal, Tiger Data) are out of scope.
 
 ## Rules
 

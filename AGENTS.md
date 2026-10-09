@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Instructions for coding agents (GitHub Copilot and others) working in this repo.
+Instructions for coding agents (Antigravity / agy and others) working in this repo.
 
 ## Project
 
@@ -46,8 +46,13 @@ Every task conversation may be published on DEV as part of the challenge write-u
 
 ## UI
 
-A clean, minimal app UI that uses **JetBrains Mono** as its typeface. It should not look like a terminal: no brackets, no ASCII art.
+WEEK 0 used JetBrains Mono everywhere with a dark theme only; that still applies inside `WEEK 0/`. WEEK 1 (Trailkit) uses its own look:
 
-- Dark theme only. Rounded cards (`Card`), filled/outline buttons (`Button`), label-left/value-right stat rows (`Stat`). All of these live in `src/ui.tsx`; reuse them.
-- Icons: Feather from `@expo/vector-icons` only. Keep them minimal.
-- Touch targets must be at least 44dp, and icon-only buttons need an accessibility label.
+- Light and dark themes that follow the system setting. Colours come only from the tokens in `WEEK 1/src/theme.ts`; no hex values in screens.
+- Trailkit is for everyday hikers, not developers. Write plain words ("Strong match", not "97.3%" or "cosine"), and keep timings, model names and tuning under Settings → For developers.
+- Inter only, at the four sizes in the theme (13, 15, 18, 28). No monospace.
+- Cards are flat with a hairline border; don't use Android `elevation` on rounded views (it leaves grey slabs).
+- Reuse the components in `WEEK 1/src/ui.tsx` (`Text`, `Card`, `Button`, `DangerBadge`, `IconBubble`, `PillNav`) instead of styling raw views. Safety content always comes before descriptive text.
+- Danger is always shown as colour **and** a text label, never colour alone.
+- Icons: Feather from `@expo/vector-icons` only. No emoji in the UI.
+- Touch targets must be at least 44dp (48dp for buttons and tabs), and icon-only buttons need an accessibility label.
