@@ -1,11 +1,13 @@
 # AGENTS.md
 
-Instructions for coding agents (Antigravity / agy and others) working in this repo.
+Instructions for coding agents (GitHub Copilot and others) working in this repo.
 
 ## Project
 
+**cf-buddy** is an Android app (Expo / React Native) built for one person: Rajeev Kasyap ([ksrkasyap](https://codeforces.com/profile/ksrkasyap)), whose goal is Codeforces 1800 by Dec 31, 2026. It plans his daily problems, runs Forest-style focus sessions (leave the app and the tree dies), and uses **on-device Gemma** for graded hints during focus and roasts. Problem picking is plain code.
+
 - **Product spec and source of truth:** [IDEA.md](IDEA.md). Read it before starting any task.
-- **Challenge context:** [PROBLEM.md](PROBLEM.md)
+- **Challenge context:** [PROBLEM.md](PROBLEM.md) (DEV Hacktoberfest Weekend Challenge, due Mon Oct 5, 06:59 UTC).
 
 ## Roles
 
@@ -16,43 +18,52 @@ Instructions for coding agents (Antigravity / agy and others) working in this re
 
 1. **Never commit unless the user explicitly says so.** Leave the changes in the working tree.
 2. When told to commit, use **one-line Conventional Commits, all lowercase, and no co-author trailer or other trailers.**
-   - Good: `feat: add focus session tree`, `fix: handle cf rate limit`, `chore(font): add jetbrains mono`
+   - Good: `feat: add focus session tree`, `fix: handle cf rate limit`, `chore: add jetbrains mono`
    - Bad: `Feat: Add Focus Session`, multi-line bodies, `Co-Authored-By: ...`
 3. **Do not use the DevRelay MCP tools** (`devrelay-gateway`, any `mcp__devrelay*` tool, or devrelay skills). The planner owns everything DEV/MLH related.
 4. **Privacy invariants. These are non-negotiable:**
+   - Calendar: keep only `{ start, end }` busy blocks. Event titles, notes, locations and attendees must never be stored, logged, or passed to Gemma. Drop them in the function that reads the calendar.
    - Gemma runs **on device** (`llama.rn`). No cloud LLM calls, ever.
-
-## Session logging (DevRelay)
-
-Every task conversation may be published on DEV as part of the challenge write-up. The planner handles uploads with DevRelay; you never call it (see Hard rule 3). Your job is to keep each session clean enough to publish.
-
-- **One task per conversation.** Start the first message with the task ID and title, e.g. `task 07: field id card`. Don't mix tasks or carry one over into another chat.
-- **Assume it's public.** Never paste API keys, tokens, `.env` contents, personal locations or real GPS tracks. Use fixtures from `test/fixtures/` instead.
-- **Explain decisions in the chat, not just in code.** When you pick an approach or reject one, say why in one line. Judges read these sessions to understand the build.
-- **End with a summary** in this exact shape so the planner can tag and submit the session:
-  `done: <task id> · files: <changed files> · tests: <pass/fail> · notes: <open issues or none>`
-- **Keep failed attempts.** Don't restart a conversation to hide a dead end; the debugging is part of the story.
+   - No backend, analytics, or telemetry.
+5. **No notifications.** Rajeev explicitly said no. Don't add `expo-notifications`.
 
 ## Clean code (priority)
 
 - TypeScript `strict`. No `any`, no `@ts-ignore`.
-- Small, pure functions for the logic (plan math, problem filtering, busy-block math). Keep side effects at the edges, in thin modules.
-- Use clear single line comments, only if needed. Comment only the _why_.
+- Small, pure functions for the logic (plan math, problem filtering, busy-block math). Keep side effects (CF API, calendar, `llama.rn`, AsyncStorage) at the edges, in thin modules.
+- Use clear names over comments. Comment only the *why*.
 - No speculative abstractions: no interface with one implementation, no config for values that never change, and no "for later" scaffolding.
 - Don't add a dependency for something a few lines can do. Ask before adding any new one.
-- Handle errors at the edges. If anything fails to load, show a one-line message. The app must never crash.
+- Handle errors at the edges. If CF is down or Gemma fails to load, show a one-line message. The app must never crash.
 - Every non-trivial pure function gets one focused test (`jest-expo`). Don't write tests for trivial code.
 - Match the code that's already here before inventing a new pattern.
 
+## Stack
+
+- Expo SDK (latest), **dev build** (no Expo Go), TypeScript, Android only.
+- `llama.rn` + a small Gemma GGUF downloaded on first launch.
+- `expo-calendar` (read only), `expo-keep-awake` (the phone sits beside his PC during focus), `AppState` (tree death), AsyncStorage, `@expo/vector-icons`.
+- Font: **JetBrains Mono** (`@expo-google-fonts/jetbrains-mono`) everywhere.
+
+## Codeforces API
+
+- Base: `https://codeforces.com/api/`. Public, no auth.
+- **Rate limit: at most 1 request per 2 seconds.** Route every call through one client that enforces this.
+- Endpoints used: `user.info`, `user.rating`, `user.status`, `problemset.problems` (cache for 24h), `contest.list`.
+- "Solved" means a submission with `verdict === "OK"`. Nothing else counts.
+
 ## UI
 
-WEEK 0 used JetBrains Mono everywhere with a dark theme only; that still applies inside `WEEK 0/`. WEEK 1 (Trailkit) uses its own look:
+A clean, minimal app UI that uses **JetBrains Mono** as its typeface. It should not look like a terminal: no brackets, no ASCII art.
+- Dark theme only. Rounded cards (`Card`), filled/outline buttons (`Button`), label-left/value-right stat rows (`Stat`). All of these live in `src/ui.tsx`; reuse them.
+- Icons: Feather from `@expo/vector-icons` only. Keep them minimal.
+- Today shows the day's suggested problems as a **wallet-style card stack** (`src/CardStack.tsx`; picked once a day, a refresh never reshuffles them, each card has a small focus button), then a full-width **start focus** that asks for the problem number, then the stats, the daily tree row and the streak grid.
+- Focus is a **full-screen tree** (`src/Tree.tsx`: eight growth stages over 80 minutes, from `assets/tree-stages/`) with a timer and a stack of hint cards (`src/HintStack.tsx`: hold to reveal the next, swipe back through seen ones). No chat. He solves on his PC, so the app never shows the problem.
+- The accent color, goal, show/hide tags and show/hide ratings come from Settings. Never hardcode Rajeev's handle, rating or goal in the UI.
+- Touch targets must be at least 44dp, and icon-only buttons need an accessibility label.
 
-- Light and dark themes that follow the system setting. Colours come only from the tokens in `WEEK 1/src/theme.ts`; no hex values in screens.
-- Trailkit is for everyday hikers, not developers. Write plain words ("Strong match", not "97.3%" or "cosine"), and keep timings, model names and tuning under Settings → For developers.
-- Inter only, at the four sizes in the theme (13, 15, 18, 28). No monospace.
-- Cards are flat with a hairline border; don't use Android `elevation` on rounded views (it leaves grey slabs).
-- Reuse the components in `WEEK 1/src/ui.tsx` (`Text`, `Card`, `Button`, `DangerBadge`, `IconBubble`, `PillNav`) instead of styling raw views. Safety content always comes before descriptive text.
-- Danger is always shown as colour **and** a text label, never colour alone.
-- Icons: Feather from `@expo/vector-icons` only. No emoji in the UI.
-- Touch targets must be at least 44dp (48dp for buttons and tabs), and icon-only buttons need an accessibility label.
+## Prompts (Gemma)
+
+- Plain code computes the numbers: targets, ratings, busy blocks, and candidate problems. Gemma only **chooses from given options** and **writes short text**. It never invents problems or numbers.
+- Tone: roasts like a friend, hints like a calm senior mentor. A hidden WebView (`src/EditorialLoader.tsx`) fetches the problem's editorial with all code stripped; when focus starts, Gemma turns it into **4 graded hints** in the background (vaguest first, never code or the final formula). The first two only point, so they're dropped if they name a tag or recite the editorial.
+- Prototype prompts on the Mac using Ollama `gemma4:12b`, then verify them on the small on-device model.
