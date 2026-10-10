@@ -25,6 +25,7 @@
       ]
     },
     "plugins": [
+      "./plugins/withLocalNotificationsOnly.js",
       "expo-font",
       "llama.rn",
       "onnxruntime-react-native",
@@ -61,7 +62,8 @@
           "imageWidth": 180,
           "backgroundColor": "#0E1013"
         }
-      ]
+      ],
+      "./plugins/withSceneLifecycle.js"
     ],
     "ios": {
       "bundleIdentifier": "com.aravind.trailkit",
@@ -69,7 +71,8 @@
       "infoPlist": {
         "UIFileSharingEnabled": true,
         "LSSupportsOpeningDocumentsInPlace": true
-      }
+      },
+      "appleTeamId": "9FWFLWF6XN"
     },
     "description": "Offline trail companion: record your treks, check whether a plant, insect or snake is safe with on-device AI, and share routes with other hikers.",
     "icon": "./assets/icon.png",

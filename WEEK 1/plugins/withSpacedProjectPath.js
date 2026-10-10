@@ -32,6 +32,12 @@ function withQuotedBundlePhase(config) {
       if (typeof phase !== 'object' || typeof phase.shellScript !== 'string') continue;
       phase.shellScript = phase.shellScript.replace(/`(\\"\$NODE_BINARY\\" --print [^`]*)`/, '\\"$($1)\\"');
     }
+    // Xcode's "recommended settings" turn on user-script sandboxing, which blocks React Native's
+    // device-build script from writing ip.txt into the app ("Operation not permitted")
+    const configs = mod.modResults.hash.project.objects.XCBuildConfiguration ?? {};
+    for (const config of Object.values(configs)) {
+      if (typeof config === 'object' && config.buildSettings) config.buildSettings.ENABLE_USER_SCRIPT_SANDBOXING = 'NO';
+    }
     return mod;
   });
 }
